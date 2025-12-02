@@ -1,6 +1,6 @@
 
 /* =========================================
-   2. تهيئة المكتبات (AOS & Typed)
+   2. Init Libraries
    ========================================= */
 AOS.init({ offset: 120, duration: 1000 });
 
@@ -10,30 +10,21 @@ var typed = new Typed('.auto-type', {
 });
 
 /* =========================================
-   3. إدارة البارتكلز (الإصلاح الجذري: Destroy)
+   3. Particles Manager (With Destroy Fix)
    ========================================= */
 function loadParticles(colorHex) {
-    // 🛑 تنظيف الذاكرة القديمة لمنع الشاشة السوداء 🛑
     if (window.pJSDom && window.pJSDom.length > 0) {
         window.pJSDom[0].pJS.fn.vendors.destroypJS();
         window.pJSDom = [];
     }
-
-    // تشغيل النسخة الجديدة
     particlesJS("particles-js", {
         "particles": {
             "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-            "color": { "value": colorHex }, /* اللون المتغير */
+            "color": { "value": colorHex },
             "shape": { "type": "circle" },
             "opacity": { "value": 0.5 },
             "size": { "value": 3, "random": true },
-            "line_linked": { 
-                "enable": true, 
-                "distance": 150, 
-                "color": colorHex, /* الخطوط تأخذ نفس اللون */
-                "opacity": 0.4, 
-                "width": 1 
-            },
+            "line_linked": { "enable": true, "distance": 150, "color": colorHex, "opacity": 0.4, "width": 1 },
             "move": { "enable": true, "speed": 3 }
         },
         "interactivity": {
@@ -46,7 +37,7 @@ function loadParticles(colorHex) {
 }
 
 /* =========================================
-   4. إدارة الثيمات والألوان (Settings Logic)
+   4. Settings & Theme Logic
    ========================================= */
 const settingsBox = document.querySelector('.settings-box');
 const root = document.querySelector(':root');
@@ -57,33 +48,25 @@ function toggleSettings() {
 
 function resetTheme() {
     setTheme('#D4AF37', '#AA8A2E');
-    // إزالة التحديد من الأزرار
     document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
 }
 
 function setTheme(mainColor, darkColor) {
-    // 1. تغيير متغيرات CSS (النصوص، الأزرار)
     root.style.setProperty('--gold-main', mainColor);
     root.style.setProperty('--gold-dark', darkColor);
-    
-    // 2. تغيير لون الوهج والشفافية (مهم جداً)
     root.style.setProperty('--gold-rgb', hexToRgb(mainColor)); 
     
-    // 3. إعادة بناء البارتكلز باللون الجديد
     loadParticles(mainColor);
     
-    // 4. تحديث حالة الزر النشط
     if (event && event.target && event.target.classList.contains('color-btn') && !event.target.classList.contains('reset-btn')) {
         document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
     }
 }
-
-// تشغيل الثيم الافتراضي عند الفتح
 setTheme('#D4AF37', '#AA8A2E');
 
 /* =========================================
-   5. شاشة التحميل (System Boot)
+   5. System Boot Preloader (Complex Version)
    ========================================= */
 if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
 window.scrollTo(0, 0);
@@ -100,27 +83,28 @@ window.addEventListener('load', function() {
         progress += Math.floor(Math.random() * 5) + 2;
         if (progress > 100) progress = 100;
         
-        if (percentText) percentText.innerText = progress + "%";
-        if (loadingBar) loadingBar.style.width = progress + "%";
+        if(percentText) percentText.innerText = progress + "%";
+        if(loadingBar) loadingBar.style.width = progress + "%";
 
-        if(progress > 30 && statusText) statusText.innerText = "LOADING ASSETS...";
-        if(progress > 70 && statusText) statusText.innerText = "CONFIGURING UI...";
-        if(progress === 100) {
-            if(statusText) {
+        // Logic for text updates
+        if(statusText) {
+            if(progress > 30) statusText.innerText = "LOADING ASSETS...";
+            if(progress > 70) statusText.innerText = "CONFIGURING UI...";
+            if(progress === 100) {
                 statusText.innerText = "SYSTEM READY";
                 statusText.style.color = "#fff";
+                clearInterval(interval);
+                setTimeout(() => {
+                    if(preloader) preloader.classList.add('loaded');
+                    document.body.style.overflow = 'visible';
+                }, 800);
             }
-            clearInterval(interval);
-            setTimeout(() => {
-                if(preloader) preloader.classList.add('loaded');
-                document.body.style.overflow = 'visible';
-            }, 800);
         }
     }, 50);
 });
 
 /* =========================================
-   6. القوائم والموبايل (Mobile Menu)
+   6. UI Logic (Nav & Scroll)
    ========================================= */
 const hamburger = document.getElementById('hamburgerBtn');
 const navLinks = document.getElementById('navLinks');
@@ -135,7 +119,7 @@ window.onscroll = function() {
 };
 
 /* =========================================
-   7. عداد الأرقام (Counters)
+   7. Counters
    ========================================= */
 const counters = document.querySelectorAll('.counter');
 let hasRun = false;
@@ -163,21 +147,39 @@ window.addEventListener('scroll', () => {
 });
 
 /* =========================================
-   8. المزيد من التقييمات (Load More)
+   8. Reviews Load More
    ========================================= */
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 if(loadMoreBtn){
     loadMoreBtn.addEventListener('click', () => {
-        document.querySelectorAll('.hidden-review').forEach(r => {
-            r.classList.remove('hidden-review');
-            r.classList.add('aos-animate');
-        });
-        loadMoreBtn.style.display = 'none';
+        const grid = document.getElementById('reviewsGrid');
+        const cards = grid.querySelectorAll('.review-card');
+        const isExpanded = loadMoreBtn.getAttribute('data-expanded') === 'true';
+
+        if (!isExpanded) {
+            cards.forEach(card => {
+                card.classList.remove('hidden-review'); 
+                card.style.display = 'flex'; 
+                card.classList.add('aos-animate');
+            });
+            loadMoreBtn.innerHTML = 'عرض أقل <i class="fas fa-chevron-up"></i>';
+            loadMoreBtn.setAttribute('data-expanded', 'true');
+        } else {
+            cards.forEach((card, index) => {
+                if (index >= 3) {
+                    card.classList.add('hidden-review');
+                    card.style.display = 'none';
+                }
+            });
+            loadMoreBtn.innerHTML = 'عرض المزيد <i class="fas fa-chevron-down"></i>';
+            loadMoreBtn.setAttribute('data-expanded', 'false');
+            document.querySelector('.testimonials-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     });
 }
 
 /* =========================================
-   9. الأسئلة الشائعة (FAQ)
+   9. FAQ Logic
    ========================================= */
 document.querySelectorAll(".faq-item").forEach(faq => {
     faq.addEventListener("click", () => {
@@ -198,7 +200,7 @@ document.querySelectorAll(".faq-item").forEach(faq => {
 });
 
 /* =========================================
-   10. التنبيهات وقائمة كليك يمين (UX)
+   10. Custom Alerts & Context Menu
    ========================================= */
 const customAlert = document.getElementById('customAlert');
 const alertMsg = document.getElementById('alertMessage');
@@ -246,7 +248,7 @@ function copyLink() {
 }
 
 /* =========================================
-   11. الساعة المزدوجة والترحيب (Clock Logic)
+   11. Smart Greeting & Dual Clock
    ========================================= */
 function updateSystemStatus() {
     const greetingEl = document.getElementById('greeting-text');
@@ -278,9 +280,6 @@ function updateSystemStatus() {
 setInterval(updateSystemStatus, 1000);
 updateSystemStatus();
 
-/* =========================================
-   12. حركة الساعة مع السكرول
-   ========================================= */
 window.addEventListener('scroll', () => {
     const heroClockContainer = document.querySelector('.system-status');
     const navClock = document.getElementById('nav-clock');
@@ -295,7 +294,7 @@ window.addEventListener('scroll', () => {
 });
 
 /* =========================================
-   13. خدعة عنوان التبويب
+   12. Tab Title Trick
    ========================================= */
 let docTitle = document.title;
 window.addEventListener("blur", () => { document.title = "🥺 لا ترحل!"; });
@@ -303,28 +302,28 @@ window.addEventListener("focus", () => {
     document.title = "🔥 أهلاً بك مجدداً";
     setTimeout(() => { document.title = docTitle; }, 2000);
 });
-/* === Contact Form Logic (EmailJS) === */
+
+/* =========================================
+   13. Contact Form (EmailJS)
+   ========================================= */
 const contactForm = document.querySelector('.contact-form');
 
 if(contactForm){
     contactForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // منع إعادة تحميل الصفحة
+        e.preventDefault();
         
         const btn = contactForm.querySelector('button');
         const originalText = btn.innerHTML;
-        
-        // تغيير شكل الزرار أثناء الإرسال
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
         btn.disabled = true;
 
-        // إرسال البيانات (استبدل الـ IDs باللي جبتهم من الموقع)
-        const serviceID = 'service_fuluy6n';
+        const serviceID = 'service_fuluy6n'; 
         const templateID = 'template_bpuf6mt';
 
         emailjs.sendForm(serviceID, templateID, this)
             .then(() => {
                 showCustomAlert('تم استلام رسالتك بنجاح! سأتواصل معك قريباً.', 'تم الإرسال ✅');
-                contactForm.reset(); // مسح الحقول
+                contactForm.reset();
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }, (err) => {
@@ -335,29 +334,39 @@ if(contactForm){
             });
     });
 }
-/* === Firebase Logic (Reviews) === */
-// ⚠️ انسخ إعداداتك من موقع Firebase وحطها هنا
+
+/* =========================================
+   14. Reviews Logic (Real Firebase) 🔥
+   ========================================= */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "...",
-  appId: "..."
+  apiKey: "AIzaSyANz8dBPKkSD6mqTuVk77WLRqsVQ1hVlog",
+  authDomain: "kyrillos-protifolio.firebaseapp.com",
+  projectId: "kyrillos-protifolio",
+  storageBucket: "kyrillos-protifolio.firebasestorage.app",
+  messagingSenderId: "154071914816",
+  appId: "1:154071914816:web:b246ca0b0aada5db3502a5",
+  measurementId: "G-64M0V7QRPO"
 };
 
-// تهيئة فايربيس
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// Initialize Firebase
+try {
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+    console.log("Firebase Connected");
+} catch (e) {
+    console.error("Firebase Error:", e);
+}
 
-// 1. فتح وقفل المودال
+// 1. Modal Logic
 const reviewModal = document.getElementById('reviewModal');
-function openReviewModal() { reviewModal.classList.add('active'); }
-function closeReviewModal() { reviewModal.classList.remove('active'); }
+function openReviewModal() { if(reviewModal) reviewModal.classList.add('active'); }
+function closeReviewModal() { if(reviewModal) reviewModal.classList.remove('active'); }
 
-// 2. اختيار النجوم
+// 2. Rating Logic
 function setRating(n) {
-    document.getElementById('reviewRating').value = n;
+    const ratingInput = document.getElementById('reviewRating');
+    if(ratingInput) ratingInput.value = n;
+    
     const stars = document.querySelectorAll('.rating-select i');
     stars.forEach((s, index) => {
         if(index < n) { s.className = 'fas fa-star'; s.style.color = 'var(--gold-main)'; }
@@ -365,61 +374,107 @@ function setRating(n) {
     });
 }
 
-// 3. حفظ التقييم في قاعدة البيانات
-document.getElementById('addReviewForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('reviewName').value;
-    const role = document.getElementById('reviewRole').value;
-    const text = document.getElementById('reviewText').value;
-    const rating = document.getElementById('reviewRating').value;
+// 3. Add Review
+const reviewForm = document.getElementById('addReviewForm');
+if(reviewForm) {
+    reviewForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('reviewName').value;
+        const role = document.getElementById('reviewRole').value;
+        const text = document.getElementById('reviewText').value;
+        let rating = parseFloat(document.getElementById('reviewRating').value);
+        
+        // Half star check
+        const isHalf = document.getElementById('halfStarCheck');
+        if(isHalf && isHalf.checked) rating += 0.5;
+        if(rating > 5) rating = 5;
 
-    if(rating == 0) { showCustomAlert("من فضلك اختر عدد النجوم!"); return; }
+        if(rating == 0) { showCustomAlert("من فضلك اختر عدد النجوم!"); return; }
 
-    db.collection("reviews").add({
-        name: name,
-        role: role,
-        text: text,
-        rating: parseInt(rating),
-        date: new Date()
-    }).then(() => {
-        showCustomAlert("شكراً لك! تم إضافة تقييمك بنجاح.", "تم");
-        closeReviewModal();
-        loadReviews(); // تحديث القائمة
-    }).catch((error) => {
-        console.error("Error: ", error);
-        showCustomAlert("حدث خطأ، تأكد من الاتصال بالإنترنت.");
-    });
-});
+        const btn = reviewForm.querySelector('button[type="submit"]');
+        const oldText = btn.innerText;
+        btn.innerText = "جاري النشر...";
+        btn.disabled = true;
 
-// 4. جلب وعرض التقييمات من قاعدة البيانات
-function loadReviews() {
-    const grid = document.getElementById('reviewsGrid');
-    // هنسيب أول 3 تقييمات ثابتة (عشان الشكل) ونضيف الجديد تحتهم
-    // أو ممكن نمسحهم ونعرض من الداتا بيس بس
-    
-    db.collection("reviews").orderBy("date", "desc").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const starsHTML = Array(5).fill(0).map((_, i) => 
-                i < data.rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'
-            ).join('');
-
-            const card = `
-                <div class="review-card glass" data-aos="flip-up">
-                    <div class="stars" style="color: var(--gold-main)">${starsHTML}</div>
-                    <p>"${data.text}"</p>
-                    <div class="client-info">
-                        <div class="client-avatar">${data.name.charAt(0)}</div>
-                        <div><h4>${data.name}</h4><span>${data.role}</span></div>
-                    </div>
-                </div>
-            `;
-            // إضافة الكارت الجديد في الأول
-            grid.insertAdjacentHTML('afterbegin', card); 
+        db.collection("reviews").add({
+            name: name, role: role, text: text, rating: rating, date: new Date()
+        }).then(() => {
+            showCustomAlert("شكراً لك! تم نشر تقييمك.", "نجاح");
+            closeReviewModal();
+            reviewForm.reset();
+            setRating(0);
+            if(isHalf) isHalf.checked = false;
+            btn.innerText = oldText;
+            btn.disabled = false;
+            loadReviews();
+        }).catch((error) => {
+            console.error("Error: ", error);
+            showCustomAlert("حدث خطأ في الاتصال!", "خطأ");
+            btn.innerText = oldText;
+            btn.disabled = false;
         });
     });
 }
 
-// تحميل التقييمات عند فتح الموقع
-loadReviews();
+// 4. Load Reviews
+function loadReviews() {
+    const grid = document.getElementById('reviewsGrid');
+    if(!grid) return;
+
+    // Remove old Firebase reviews to avoid duplicates
+    const addedReviews = grid.querySelectorAll('.added-by-firebase');
+    addedReviews.forEach(el => el.remove());
+
+    db.collection("reviews").orderBy("date", "desc").get().then((querySnapshot) => {
+        const allDocs = [];
+        querySnapshot.forEach((doc) => allDocs.push(doc.data()));
+
+        // Add Firebase reviews to DOM (Prepended)
+        allDocs.forEach((data) => {
+            let starsHTML = '';
+            for(let i=1; i<=5; i++) {
+                if(data.rating >= i) starsHTML += '<i class="fas fa-star"></i>';
+                else if (data.rating >= i - 0.5) starsHTML += '<i class="fas fa-star-half-alt"></i>';
+                else starsHTML += '<i class="far fa-star"></i>';
+            }
+
+            const cardHTML = `
+                <div class="review-card glass added-by-firebase" data-aos="flip-up">
+                    <div class="stars" style="color: var(--gold-main); direction: rtl; display: inline-flex;">${starsHTML}</div>
+                    <p>"${data.text}"</p>
+                    <div class="client-info">
+                        <div class="client-avatar" style="background: var(--gold-main); color: #000;">${data.name.charAt(0).toUpperCase()}</div>
+                        <div><h4>${data.name}</h4><span>${data.role}</span></div>
+                    </div>
+                </div>
+            `;
+            grid.insertAdjacentHTML('afterbegin', cardHTML);
+        });
+        
+        // Re-calculate visibility for ALL reviews (Hardcoded + Firebase)
+        const allCards = grid.querySelectorAll('.review-card');
+        allCards.forEach((card, index) => {
+            if (index < 3) {
+                card.classList.remove('hidden-review');
+                card.style.display = 'flex';
+            } else {
+                card.classList.add('hidden-review');
+                card.style.display = 'none';
+            }
+        });
+
+        if(loadMoreBtn) {
+            if(allCards.length <= 3) loadMoreBtn.style.display = 'none';
+            else {
+                loadMoreBtn.style.display = 'inline-block';
+                loadMoreBtn.innerHTML = 'عرض المزيد <i class="fas fa-chevron-down"></i>';
+                loadMoreBtn.setAttribute('data-expanded', 'false');
+            }
+        }
+    });
+}
+
+if(typeof firebase !== 'undefined') {
+    loadReviews();
+}
