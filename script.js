@@ -10,13 +10,15 @@ var typed = new Typed('.auto-type', {
 });
 
 /* =========================================
-   3. Particles Manager (With Destroy Fix)
+   3. Particles Manager (Fixed Mouse Interaction)
    ========================================= */
 function loadParticles(colorHex) {
+    // تنظيف الذاكرة القديمة
     if (window.pJSDom && window.pJSDom.length > 0) {
         window.pJSDom[0].pJS.fn.vendors.destroypJS();
         window.pJSDom = [];
     }
+
     particlesJS("particles-js", {
         "particles": {
             "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
@@ -28,7 +30,8 @@ function loadParticles(colorHex) {
             "move": { "enable": true, "speed": 3 }
         },
         "interactivity": {
-            "detect_on": "canvas",
+            /* 🛑 التغيير المهم هنا: window بدلاً من canvas 🛑 */
+            "detect_on": "window", 
             "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
             "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
         },
@@ -239,7 +242,7 @@ document.body.addEventListener("click", (e) => {
 });
 
 function copyEmail() {
-    navigator.clipboard.writeText("email@example.com");
+    navigator.clipboard.writeText("aboukeroazmy2@gmail.com");
     showCustomAlert("تم نسخ البريد الإلكتروني بنجاح!", "عملية ناجحة");
 }
 function copyLink() {
@@ -261,10 +264,10 @@ function updateSystemStatus() {
     const seconds = date.getSeconds();
     
     let greeting = "";
-    if (hours >= 5 && hours < 12) greeting = "صباح الخير ☀️";
-    else if (hours >= 12 && hours < 18) greeting = "طاب يومك 🚀";
+    if (hours >= 5 && hours < 12) greeting = "نهارك لـذيذ ☀️";
+    else if (hours >= 12 && hours < 18) greeting = "صـباح الفـل 🚀";
     else if (hours >= 18 && hours < 22) greeting = "مساء الخير ✨";
-    else greeting = "ساهر الليل 🌙";
+    else greeting = "مش هتنام بقي 🌙";
     
     const ampm = hours >= 12 ? 'PM' : 'AM';
     let h = hours % 12; h = h ? h : 12; 
@@ -478,3 +481,134 @@ function loadReviews() {
 if(typeof firebase !== 'undefined') {
     loadReviews();
 }
+/* =========================================
+   17. 3D Tag Cloud Logic (كرة المهارات)
+   ========================================= */
+const myTags = [
+    'HTML5', 'CSS3', 'JavaScript', 'ES6', 'React.js',
+    'Firebase', 'Git', 'GitHub', 'SASS', 'Bootstrap',
+    'Tailwind', 'Figma', 'Photoshop', 'UI/UX', 'SEO',
+    'Responsive', 'Animation', 'JSON', 'API', 'EmailJS'
+];
+
+function initTagCloud() {
+    const container = document.querySelector('.tag-sphere');
+    if (!container) return;
+
+    const radius = 200; // نصف قطر الكرة
+    const totalTags = myTags.length;
+    const tags = [];
+
+    // إنشاء العناصر
+    myTags.forEach((tagText, i) => {
+        const tag = document.createElement('span');
+        tag.className = 'tag-item';
+        tag.innerText = tagText;
+        container.appendChild(tag);
+        tags.push(tag);
+    });
+
+    // حساب المواقع (Spherical Distribution)
+    let angleX = 0;
+    let angleY = 0;
+    
+    // سرعة الدوران التلقائي
+    let autoRotateX = 0.002; 
+    let autoRotateY = 0.002;
+
+    function updateSphere() {
+        angleX += autoRotateX;
+        angleY += autoRotateY;
+
+        tags.forEach((tag, i) => {
+            // توزيع فيبوناتشي للكرة (توزيع متساوي)
+            const phi = Math.acos(-1 + (2 * i + 1) / totalTags);
+            const theta = Math.sqrt(totalTags * Math.PI) * phi;
+
+            let x = radius * Math.cos(theta) * Math.sin(phi);
+            let y = radius * Math.sin(theta) * Math.sin(phi);
+            let z = radius * Math.cos(phi);
+
+            // تطبيق الدوران
+            // دوران حول Y
+            let dy = y;
+            let dz = z * Math.cos(angleY) - x * Math.sin(angleY);
+            let dx = z * Math.sin(angleY) + x * Math.cos(angleY);
+            
+            // دوران حول X
+            let dx2 = dx;
+            let dy2 = dy * Math.cos(angleX) - dz * Math.sin(angleX);
+            let dz2 = dy * Math.sin(angleX) + dz * Math.cos(angleX);
+
+            // تحديث القيم النهائية
+            x = dx2;
+            y = dy2;
+            z = dz2;
+
+            // الحجم والشفافية بناءً على العمق (Z)
+            const scale = (2 * radius + z) / (2.5 * radius); // منظور
+            const opacity = (z + radius) / (2 * radius); // البعيد شفاف
+
+            tag.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) scale(${scale})`;
+            tag.style.opacity = Math.max(0.2, opacity);
+            tag.style.zIndex = Math.floor(z); // القريب يغطي البعيد
+        });
+
+        requestAnimationFrame(updateSphere);
+    }
+
+    // تفاعل الماوس (تغيير السرعة والاتجاه)
+    const wrapper = document.querySelector('.tag-cloud-container');
+    wrapper.addEventListener('mousemove', (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left - rect.width / 2;
+        const mouseY = e.clientY - rect.top - rect.height / 2;
+        
+        // تغيير السرعة حسب مكان الماوس
+        autoRotateY = mouseX * 0.0002;
+        autoRotateX = -mouseY * 0.0002;
+    });
+    
+    // عند خروج الماوس، العودة للسرعة الهادئة
+    wrapper.addEventListener('mouseleave', () => {
+        autoRotateX = 0.002;
+        autoRotateY = 0.002;
+    });
+
+    updateSphere();
+}
+
+// تشغيل بعد التحميل
+window.addEventListener('load', initTagCloud);
+/* =========================================
+   16. Hacker Cursor Logic
+   ========================================= */
+const hackerChars = "01{}[]<>/*-+!@#$k"; // الرموز اللي هتظهر
+
+document.addEventListener('mousemove', function(e) {
+    // عشان ميعملش زحمة، بنشغل الكود مرة كل شوية حركات
+    if (Math.random() < 0.50) return; // 15% بس من الحركات بتعمل رقم
+
+    const char = document.createElement('span');
+    char.innerText = hackerChars[Math.floor(Math.random() * hackerChars.length)];
+    char.className = 'hacker-char';
+    
+    // مكان الماوس
+    char.style.left = e.clientX + 'px';
+    char.style.top = e.clientY + 'px';
+    
+    // لون الثيم الحالي (عشان يليق مع الموقع)
+    const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--gold-main').trim();
+    char.style.color = themeColor;
+
+    // حجم عشوائي لزوم الواقعية
+    char.style.fontSize = (Math.random() * 10 + 10) + 'px';
+
+    document.body.appendChild(char);
+
+    // مسح العنصر بعد ثانية (لما الأنيميشن يخلص)
+    setTimeout(() => {
+        char.remove();
+    }, 2000);
+});
+
