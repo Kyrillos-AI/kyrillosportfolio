@@ -252,7 +252,22 @@ function loadParticles(colorHex) {
    ========================================= */
 const settingsBox = document.querySelector('.settings-box');
 const root = document.querySelector(':root');
+const themeModal = document.getElementById('themeModal');
 
+function openThemeModal() {
+    if(themeModal) themeModal.classList.add('active');
+}
+
+function closeThemeModal() {
+    if(themeModal) themeModal.classList.remove('active');
+}
+
+// Close if clicked outside the box
+if(themeModal) {
+    themeModal.addEventListener('click', (e) => {
+        if (e.target === themeModal) closeThemeModal();
+    });
+}
 function toggleSettings() { 
     if(settingsBox) settingsBox.classList.toggle('open'); 
 }
@@ -277,43 +292,42 @@ function setTheme(mainColor, darkColor) {
 setTheme('#D4AF37', '#AA8A2E');
 
 /* =========================================
-   5. System Boot Preloader (Complex Version)
+   5. NEW SYSTEM PRELOADER (With Percentage)
    ========================================= */
-if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
-window.scrollTo(0, 0);
-document.body.style.overflow = 'hidden';
-
-window.addEventListener('load', function() {
-    const preloader = document.getElementById('preloader');
-    const percentText = document.getElementById('loading-percent');
-    const loadingBar = document.querySelector('.loading-bar');
-    const statusText = document.getElementById('loading-status');
-    let progress = 0;
+{
+    // Make sure scroll is locked
+    document.body.style.overflow = 'hidden';
     
-    const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 5) + 2;
-        if (progress > 100) progress = 100;
-        
-        if(percentText) percentText.innerText = progress + "%";
-        if(loadingBar) loadingBar.style.width = progress + "%";
+    const loaderWrapper = document.querySelector('.loader-wrapper');
+    const percentText = document.querySelector('.loader-percent');
+    
+    let load = 0;
+    
+    // Speed: 30ms (Fast) to 100ms (Slow). 
+    // Set to 25ms for a "bit faster" feel as requested.
+    let int = setInterval(blurring, 25); 
 
-        // Logic for text updates
-        if(statusText) {
-            if(progress > 30) statusText.innerText = "LOADING ASSETS...";
-            if(progress > 70) statusText.innerText = "CONFIGURING UI...";
-            if(progress === 100) {
-                statusText.innerText = "SYSTEM READY";
-                statusText.style.color = "#fff";
-                clearInterval(interval);
-                setTimeout(() => {
-                    if(preloader) preloader.classList.add('loaded');
-                    document.body.style.overflow = 'visible';
-                }, 800);
+    function blurring() {
+        load++;
+        
+        if (load > 99) {
+            clearInterval(int);
+            
+            // Fade out animation
+            if(loaderWrapper) {
+                loaderWrapper.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Unlock scroll
             }
         }
-    }, 50);
-});
-
+        
+        // Update the text
+        if(percentText) {
+            percentText.innerText = `${load}%`;
+            // Optional: Fade opacity of text as it reaches 100
+            // percentText.style.opacity = scale(load, 0, 100, 1, 0); 
+        }
+    }
+}
 /* =========================================
    6. UI Logic (Nav & Scroll)
    ========================================= */

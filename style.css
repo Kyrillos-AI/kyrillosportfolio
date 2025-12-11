@@ -4,7 +4,7 @@
 :root {
     --gold-main: #D4AF37;
     --gold-rgb: 212, 175, 55;
-    --gold-light: #F8F3D4;
+    --gold-trans: #d4af3777;
     --gold-dark: #AA8A2E;
     --black-bg: #050505;
     --black-card: #111111;
@@ -60,13 +60,62 @@ a { text-decoration: none; color: inherit; }
 .logo { font-size: 1.5rem; font-weight: 900; color: #fff; }
 .logo span { color: var(--gold-main); }
 
-.nav-links { display: flex; gap: 10px; list-style: none; margin: 0; padding: 0;  direction: rtl;}
-.nav-links a { 
-    font-size: 1rem; color: #ccc; font-weight: 500; transition: 0.3s; 
-    padding: 5px 10px; border-radius: 15px;
+/* =========================================
+   ✨ MODERN NAV LINKS (Glow & Underline)
+   ========================================= */
+.nav-links { 
+    display: flex; 
+    gap: 15px; /* Space between links */
+    list-style: none; 
+    margin: 0; 
+    padding: 0;  
+    direction: rtl;
 }
-.nav-links a:hover { color: #fff; background: #D4AF37; }
 
+.nav-links a { 
+    position: relative;
+    font-size: 1rem; 
+    color: rgba(255, 255, 255, 0.7); /* Start with soft white */
+    font-weight: 600; 
+    transition: all 0.3s ease; 
+    padding: 5px 0; /* Remove side padding, use gap instead */
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}
+
+/* Hover State: Text turns Gold & Glows */
+.nav-links a:hover { 
+    color: var(--gold-main); 
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); /* The Glow */
+    transform: translateY(-2px); /* Slight float up */
+}
+
+/* The Expanding Line Animation */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: 0;
+    left: 50%; /* Start from center */
+    background: var(--gold-main);
+    box-shadow: 0 0 10px var(--gold-main); /* Line Glow */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth Bounce */
+    transform: translateX(-50%); /* Keep centered */
+}
+
+/* Expand line on hover */
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Active State (If you add class="active" via JS later) */
+.nav-links a.active {
+    color: var(--gold-main);
+}
+.nav-links a.active::after {
+    width: 100%;
+}
 
 /* =========================================
    ⏱️ NAV CLOCK WITH ROTATING BORDER ⏱️
@@ -155,21 +204,157 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* =========================================
-   3. SYSTEM PRELOADER (تم استعادة التصميم المعقد)
+   3. CLEAN TIKTOK GLITCH (NO BOX)
    ========================================= */
-#preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; font-family: 'Courier New', monospace; transition: opacity 0.5s ease, visibility 0.5s; }
-.loader-content { width: 300px; text-align: center; }
-.loader-logo { font-size: 2rem; font-weight: 900; color: #fff; letter-spacing: 5px; margin-bottom: 20px; text-shadow: 0 0 10px var(--gold-main); animation: flicker 1.5s infinite; }
-.loading-bar-container { width: 100%; height: 4px; background: #222; margin-bottom: 10px; overflow: hidden; }
-.loading-bar { width: 0%; height: 100%; background: var(--gold-main); box-shadow: 0 0 10px var(--gold-main); transition: width 0.2s; }
-.loading-text { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--gold-main); font-weight: bold; }
-.code-loader { margin-top: 20px; text-align: left; height: 60px; overflow: hidden; display: flex; flex-direction: column; gap: 5px; }
-.code-loader span { color: #444; font-size: 0.7rem; display: block; animation: fadeInUp 0.5s forwards; opacity: 0; }
-.code-loader span:nth-child(1) { animation-delay: 0.2s; color: #666; } .code-loader span:nth-child(2) { animation-delay: 0.8s; color: #888; } .code-loader span:nth-child(3) { animation-delay: 1.5s; color: #aaa; } .code-loader span:nth-child(4) { animation-delay: 2.2s; color: var(--gold-main); }
-@keyframes flicker { 50% { opacity: 0.8; } 52% { opacity: 1; } 54% { opacity: 0.5; } }
-@keyframes fadeInUp { to { opacity: 1; transform: translateY(-5px); } }
-.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: #050505;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    font-family: 'Courier New', monospace;
+    overflow: hidden; 
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
 
+.brand-loader {
+    position: relative;
+    width: 180px; 
+    height: 180px;
+    margin-bottom: 25px;
+}
+
+/* --- THE CONTENT LAYERS --- */
+.loader-content {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+/* --- RINGS (Original Layer) --- */
+.spinner-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid transparent;
+}
+
+/* Original Outer Ring (Has Glow) */
+.ring-outer {
+    width: 100%; height: 100%;
+    border-top: 4px solid var(--gold-main);
+    border-right: 2px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); /* Glow is here */
+    animation: spinRing 2s linear infinite;
+}
+
+/* Original Inner Ring (Has Glow) */
+.ring-inner {
+    width: 70%; height: 70%;
+    border-bottom: 4px solid #fff;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    animation: spinRingReverse 1.5s linear infinite;
+}
+
+/* --- LOGO --- */
+.logo-box {
+    z-index: 10;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glitch-image {
+    width: 60px; 
+    height: 60px;
+    background-image: url('logo.png'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* --- GLITCH LAYERS (The Fix) --- */
+
+.glitch-layer {
+    opacity: 0; 
+    z-index: -1;
+    pointer-events: none;
+    mix-blend-mode: screen; /* Blends cleanly with black */
+}
+
+/* 🛑 IMPORTANT FIX: Remove Shadows from Ghost Layers */
+/* This prevents the "Square Box" look when clipped */
+.glitch-layer .spinner-ring {
+    box-shadow: none !important; 
+    background: transparent !important;
+}
+
+/* Red Shift Layer */
+.glitch-layer.red {
+    opacity: 1;
+    /* Turns everything Pink/Red */
+    filter: sepia(100%) saturate(300%) hue-rotate(350deg);
+    animation: tiktok-glitch-1 2s infinite steps(2) alternate-reverse;
+}
+
+/* Cyan Shift Layer */
+.glitch-layer.blue {
+    opacity: 1;
+    /* Turns everything Cyan */
+    filter: sepia(100%) saturate(300%) hue-rotate(180deg);
+    animation: tiktok-glitch-2 0.8s infinite steps(2) alternate-reverse;
+}
+
+/* --- TEXT & PERCENTAGE --- */
+.loader-percent {
+    position: relative; z-index: 20;
+    font-size: 1.3rem; font-weight: bold;
+    color: var(--gold-main);
+    text-shadow: 0 0 10px var(--gold-main);
+    margin-top: 0px; 
+}
+
+.loader-status {
+    position: relative; z-index: 20;
+    font-size: 1.1rem; color: #666;
+    letter-spacing: 3px; margin-top: 1px;
+    animation: blink 0.5s infinite;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spinRingReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* TIKTOK JITTER ANIMATION */
+@keyframes tiktok-glitch-1 {
+    0% { clip-path: inset(20% 0 50% 0); transform: translate(-4px, 1px); }
+    5% { clip-path: inset(10% 0 85% 0); transform: translate(4px, -1px); }
+    10% { clip-path: inset(80% 0 5% 0); transform: translate(-4px, 3px); }
+    15% { clip-path: inset(40% 0 30% 0); transform: translate(3px, -2px); }
+    20% { clip-path: inset(50% 0 20% 0); transform: translate(-3px, 2px); }
+    25% { clip-path: inset(0% 0 90% 0); transform: translate(2px, 2px); }
+    30%, 100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); opacity: 0; } 
+}
+
+@keyframes tiktok-glitch-2 {
+    0% { clip-path: inset(60% 0 10% 0); transform: translate(6px, 4px); }
+    5% { clip-path: inset(30% 0 40% 0); transform: translate(-6px, -4px); }
+    10% { clip-path: inset(10% 0 80% 0); transform: translate(5px, 5px); }
+    15% { clip-path: inset(90% 0 0% 0); transform: translate(-5px, -5px); }
+    20% { clip-path: inset(20% 0 50% 0); transform: translate(4px, 2px); }
+    25%, 100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); opacity: 0; } 
+}
+
+.loader-wrapper.hidden { opacity: 0; visibility: hidden; }
 /* =========================================
    4. HERO SECTION
    ========================================= */
@@ -238,13 +423,170 @@ a { text-decoration: none; color: inherit; }
 .text-gradient { background: linear-gradient(to right, var(--gold-dark), var(--gold-main), #fff, var(--gold-main)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; animation: shine 5s linear infinite; }
 @keyframes shine { to { background-position: 200% center; } }
 .hero-btns { margin-top: 50px; display: flex; gap: 25px; justify-content: center; }
-.btn { padding: 15px 45px; border-radius: 50px; font-weight: 700; transition: 0.4s; cursor: pointer; font-size: 1.1rem; }
-.primary { background: transparent; border: 2px solid var(--gold-main); color: var(--gold-main); box-shadow: 0 0 10px rgba(var(--gold-rgb), 0.1); }
-.primary:hover { background: var(--gold-main); color: #000; box-shadow: 0 0 30px rgba(var(--gold-rgb), 0.8); }
-.secondary { background: #1a1a1a; color: #fff; border: 2px solid #1a1a1a; }
-.socials { margin-top: 50px; font-size: 1.8rem; display: flex; gap: 30px; justify-content: center; }
-.socials a:hover { color: var(--gold-main); transform: translateY(-5px); }
+/* =========================================
+   🔥 NEW BUTTONS: Liquid Gold Style
+   ========================================= */
+.btn {
+    position: relative;
+    padding: 12px 35px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05); /* Glassy Background */
+    border: 1px solid var(--gold-dark); /* Semi-transparent Gold */
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden; /* Keeps the shine inside */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+}
 
+/* The Primary (Gold) Button */
+.primary {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* Hover Effect: Glow & Lift */
+.btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    background: var(--gold-main);
+    color: #000;
+    border-color: var(--gold-main);
+    box-shadow: 0 0 15px var(--gold-main), 0 0 10px var(--gold-trans);
+}
+
+/* The "Shine" Animation Swipe */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: 0.5s;
+    z-index: -1;
+    transform: skewX(-25deg);
+}
+
+.btn:hover::before {
+    left: 100%; /* Moves the shine across */
+}
+
+/* Secondary Button (Darker) */
+.secondary {
+    background: #000;
+    border-color: #333;
+    color: #ccc;
+}
+.secondary:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}/* =========================================
+   ✨ NEW HERO SOCIALS + TOOLTIPS FIX
+   ========================================= */
+.socials {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    perspective: 1000px;
+}
+
+.socials a {
+    position: relative;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03); /* Dark Glass */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(5px);
+    /* 🛑 REMOVED overflow: hidden so tooltip shows 🛑 */
+    
+    /* Floating Animation */
+    animation: floatOrb 3s ease-in-out infinite;
+}
+
+.socials a i {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.6);
+    transition: 0.3s;
+    z-index: 2;
+}
+
+/* 🔥 HOVER STATE */
+.socials a:hover {
+    background: var(--gold-main);
+    border-color: var(--gold-main);
+    transform: translateY(-10px) scale(1.1);
+    box-shadow: 0 0 25px var(--gold-main);
+    animation-play-state: paused;
+}
+
+.socials a:hover i {
+    color: #000;
+    transform: scale(1.2);
+}
+
+/* 🏷️ THE HOLOGRAPHIC TOOLTIP */
+.socials a::after {
+    content: attr(data-tooltip); /* Grabs text from HTML */
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    
+    color: var(--gold-main);
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    
+    opacity: 0;
+    filter: blur(10px);
+    pointer-events: none;
+    transition: 0.4s;
+    
+    /* Background Pill */
+    background: rgba(0, 0, 0, 0.9);
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+/* Reveal Tooltip on Hover */
+.socials a:hover::after {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 🌊 STAGGERED FLOAT */
+.socials a:nth-child(1) { animation-delay: 0s; }
+.socials a:nth-child(2) { animation-delay: 0.2s; }
+.socials a:nth-child(3) { animation-delay: 0.4s; }
+.socials a:nth-child(4) { animation-delay: 0.6s; }
+.socials a:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes floatOrb {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
 /* Cube */
 .cube-container { perspective: 1000px; width: 100px; height: 100px; margin: 50px auto 0; display: flex; justify-content: center; align-items: center; }
 .cube { position: relative; width: 60px; height: 60px; transform-style: preserve-3d; animation: rotateCube 10s infinite linear; }
@@ -351,11 +693,32 @@ a { text-decoration: none; color: inherit; }
 .settings-toggle:hover i { transform: rotate(180deg); }
 .settings-content { background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); width: 220px; padding: 25px; border: 1px solid var(--gold-main); border-left: none; border-radius: 0 0 10px 0; text-align: center; }
 .colors-list { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.color-btn { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.3s; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-.color-btn.active { border-color: #fff; transform: scale(1.2); box-shadow: 0 0 10px var(--gold-main); }
+.color-btn { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.3s; box-shadow: 0 0 5px rgba(0,0,0,0.5);}
+.color-btn.active { border-color: #fff; transform: scale(1.2); box-shadow: 0 0 10px var(--gold-main);}
 .reset-btn { background: #333; border: 1px solid #555; display: flex; justify-content: center; align-items: center; color: #fff; transition: 0.4s; }
 .reset-btn:hover { background: #fff; color: #000; transform: rotate(-360deg); border-color: #fff; }
+.nav-icon-btn {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #fff;
+    margin: 0 15px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+}
 
+.nav-icon-btn:hover {
+    color: var(--gold-main);
+    transform: rotate(30deg);
+    text-shadow: 0 0 10px var(--gold-main);
+}
+
+/* Mobile Adjustment */
+@media (max-width: 768px) {
+    .nav-icon-btn {
+        margin: 0 10px; /* Less space on mobile */
+    }
+}
 .contact-container { max-width: 800px; margin: auto; background: rgba(17, 17, 17, 0.8); padding: 40px; border-radius: 20px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
 .contact-form { display: flex; flex-direction: column; gap: 20px; }
 .input-group { display: flex; gap: 20px; } .input-group input { width: 50%; }
@@ -371,7 +734,7 @@ footer p { position: relative; z-index: 2; color: #888; font-size: 1.2rem; }
 #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; background-color: var(--black-bg); }
 .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 10000; }
 .progress-bar { height: 4px; width: 0%; background: var(--gold-main); box-shadow: 0 0 10px var(--gold-main); }
-.context-menu { position: fixed; z-index: 10000; width: 200px; background: #111; border: 1px solid var(--gold-main); border-radius: 10px; transform: scale(0); transition: 0.2s; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); overflow: hidden; }
+.context-menu { position: fixed; z-index: 10000; width: 200px; background: #111; border: 1px solid var(--gold-main); border-radius: 10px; transform: scale(0); transition: 0.2s; box-shadow: 0 0 15px var(--gold-dark); overflow: hidden; }
 .context-menu.visible { transform: scale(1); }
 .context-menu ul { list-style: none; }
 .context-menu ul li a { display: block; padding: 12px 15px; color: #eee; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
@@ -951,7 +1314,7 @@ html[lang="en"] p {
     border-color: var(--gold-main);
     color: #000;
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 20px var(--gold-dark);
     animation: jelly 0.5s; /* هزة عند الاختيار */
 }
 
@@ -981,11 +1344,11 @@ html[lang="en"] p {
 }
 
 .pop-bubble.active {
-    background: rgba(212, 175, 55, 0.2);
+    background: var(--gold-rgb);
     border-color: var(--gold-main);
     color: var(--gold-main);
     font-weight: bold;
-    box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.1);
+    box-shadow: inset 0 0 10px var(--gold-main);
 }
 
 .pop-bubble small { color: #666; font-size: 0.7rem; margin-right: 5px; }
@@ -1135,7 +1498,7 @@ html[lang="en"] p {
     flex-direction: column;
     border-radius: 15px;
     position: relative;
-    box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 20px var(--gold-dark);
     transform: translateY(100px) scale(0.9);
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -1251,7 +1614,7 @@ html[lang="en"] p {
     width: 100%;
     padding: 8px 0;         /* Slim button */
     font-size: 0.9rem;
-    border-radius: 8px;
+    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1267,42 +1630,6 @@ html[lang="en"] p {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-}
-/* Wrapper Position */
-.smart-wa-wrapper {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* The Border Box Container */
-.qr-popup-box {
-    position: absolute;
-    bottom: 70px; /* Distance above button */
-    
-    /* Box Styling */
-    border: 2px solid #d4af37; /* Gold Border */
-    background: transparent;   /* No Background */
-    padding: 8px;              /* Space between border and QR */
-    border-radius: 15px;       /* Rounded Corners */
-    
-    /* Size */
-    width: 140px;
-    height: 140px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    /* Hidden by default (Animation) */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    pointer-events: none;
 }
 
 /* The QR Image Styling */
@@ -1321,42 +1648,6 @@ html[lang="en"] p {
     transform: translateY(0);
     pointer-events: auto;
 }
-
-/* Button Styling (Gold) */
-.my-gold-button {
-    width: 55px;
-    height: 55px;
-    background: linear-gradient(45deg, #d4af37, #b49321);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #000;
-    font-size: 28px;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-    transition: transform 0.3s;
-}
-
-.my-gold-button:hover {
-    transform: scale(1.1);
-}
-/* --- 1. The Label 'تواصل معي' --- */
-.wa-label-text {
-    background: #000;       /* Black Background */
-    color: #d4af37;         /* Gold Text */
-    border: 1px solid #d4af37; /* Gold Border */
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
-    font-family: 'Cairo', sans-serif;
-    white-space: nowrap;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    /* Simple Float Animation */
-    animation: floatLabel 2s ease-in-out infinite;
-}
-
 /* --- 2. The QR Popup --- */
 .qr-popup-box {
     position: absolute;
@@ -1365,7 +1656,7 @@ html[lang="en"] p {
     background: #ffffff00;
     padding: 10px;
     border-radius: 10px;
-    border: 2px solid #d4af37; /* Gold Border */
+    border: 2px solid var(--gold-main); /* Gold Border */
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: center;
     width: 140px;
@@ -1391,53 +1682,12 @@ html[lang="en"] p {
     opacity: 0;
 }
 
-/* --- QR & Logo Formatting --- */
-.qr-content {
-    position: relative; /* Needed to center the logo */
-    width: 120px;
-    height: 120px;
-    margin: 0 auto;
-}
-
-.qr-code {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* The Logo in the Middle */
-.qr-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px;   /* Size of your logo inside QR */
-    height: 30px;
-    background: #fff;
-    padding: 2px;
-    border-radius: 50%; /* Makes it circular */
-    object-fit: contain;
-}
-
-.qr-popup-box p {
-    margin: 8px 0 0 0;
-    font-size: 11px;
-    color: #000;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-/* Animation Keyframes */
-@keyframes floatLabel {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-}
 
 /* --- Placeholder Style (Only if you don't use your own button) --- */
 .my-gold-button {
-    width: 55px;
-    height: 55px;
-    background: linear-gradient(45deg, #d4af37, #b49321); /* Gold Gradient */
+    width: 45px;
+    height: 45px;
+    background: var(--gold-main); /* Gold Gradient */
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -1445,9 +1695,9 @@ html[lang="en"] p {
     color: #000;
     font-size: 28px;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 2px 10px var(--gold-main);
     transition: transform 0.3s;
 }
 .my-gold-button:hover {
-    transform: scale(1.1) rotate(10deg);
+    transform: scale(1.1) rotate(20deg);
 }
