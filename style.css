@@ -685,123 +685,282 @@ a { text-decoration: none; color: inherit; }
     background-repeat: no-repeat;
     background-position: center;
 }
+
 /* =========================================
-   5. ULTRA-MODERN ABOUT (DATA & ANIMATION)
+   🔥 MODERN ABOUT SECTION (CLEAN & GOLD)
    ========================================= */
-
-/* --- 1. SECTION SETUP --- */
-.ultra-about-section {
+.modern-about-section {
+    padding: 120px 0;
     position: relative;
-    padding: 100px 0;
-    overflow: hidden;
-    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.cyber-grid-bg {
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background-image: 
-        linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    transform: perspective(500px) rotateX(60deg);
-    animation: gridMove 10s linear infinite;
-    z-index: -1;
-    opacity: 0.3;
-}
-
-@keyframes gridMove {
-    0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-    100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
-}
-
-.about-ultra-wrapper {
+/* The Main Floating Card */
+.modern-profile-card {
     display: flex;
     align-items: center;
-    gap: 80px;
+    gap: 60px;
+    background: rgba(20, 20, 20, 0.6); /* Darker, cleaner glass */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--gold-main); /* Gold Top Line */
+    padding: 60px;
+    border-radius: 30px;
+    position: relative;
+    overflow: visible; /* Allows image to pop out */
+    max-width: 1000px;
+    margin: 0 auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+/* --- LEFT SIDE: IMAGE --- */
+.profile-visual {
+    position: relative;
+    flex-shrink: 0;
+    width: 320px;
+    height: 400px;
+}
+
+/* The Image Frame */
+.img-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
     position: relative;
     z-index: 2;
-}
-
-/* --- 2. HUD CARD (WITH RESTORED DATA) --- */
-.hud-card-container {
-    flex: 1; max-width: 400px;
-    perspective: 1000px;
-}
-
-.hud-card {
-    background: rgba(10, 10, 10, 0.6);
-    backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 2px solid var(--gold-main);
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
+    transform: rotate(-3deg); /* Artistic Tilt */
+    transition: 0.5s ease;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
 }
 
-.hud-profile-img {
-    position: relative;
-    width: 100%; height: 300px; /* Adjusted height */
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-.hud-profile-img img {
-    width: 100%; height: 100%; object-fit: cover;
-    filter: grayscale(100%) contrast(1.1);
+.img-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%); /* Start Black & White */
     transition: 0.5s;
 }
 
-.hud-card-container:hover img {
-    filter: grayscale(0%) contrast(1);
-    transform: scale(1.05);
+/* Hover Effect: Color & Straighten */
+.modern-profile-card:hover .img-frame {
+    transform: rotate(0deg) scale(1.02);
+    border-color: var(--gold-main);
+}
+.modern-profile-card:hover img {
+    filter: grayscale(0%);
 }
 
-.hud-scanner {
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 2px;
+/* Gold Circle Glow Behind Image */
+.visual-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.432) 0%, transparent 70%);
+    z-index: 1;
+    animation: pulseGlow 4s infinite alternate;
+}
+
+/* Floating Badge (+3 Years) */
+.experience-badge {
+    position: absolute;
+    bottom: 30px; right: -20px;
     background: var(--gold-main);
-    box-shadow: 0 0 10px var(--gold-main);
-    animation: scan 3s ease-in-out infinite;
-    opacity: 0.7; z-index: 5;
-}
-
-/* --- THE DATA ROWS (IMPORTANT INFO) --- */
-.hud-info {
-    display: flex; flex-direction: column; gap: 8px;
-}
-
-.hud-row {
-    display: flex; justify-content: space-between;
+    color: #000;
+    padding: 15px 20px;
+    border-radius: 15px;
+    display: flex;
     align-items: center;
-    font-family: 'Courier New', monospace;
+    gap: 10px;
+    z-index: 3;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    font-weight: 900;
+    animation: floatBadge 3s ease-in-out infinite;
+}
+
+.exp-num { font-size: 1.8rem; line-height: 1; }
+.exp-text { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+
+/* --- RIGHT SIDE: CONTENT --- */
+.profile-content {
+    flex: 1;
+    text-align: left; /* English alignment default */
+}
+
+/* Right-to-Left Support for Arabic */
+html[dir="rtl"] .profile-content { text-align: right; }
+
+.mini-head {
+    color: var(--gold-main);
     font-size: 0.9rem;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed rgba(255,255,255,0.1);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.8;
 }
 
-.hud-label { color: #888; font-size: 0.8rem; text-transform: uppercase; }
-.hud-val { color: #fff; font-weight: bold; letter-spacing: 1px; }
-
-.gold-text { color: var(--gold-main); text-shadow: 0 0 5px var(--gold-main); }
-.active-green { color: #00ff88; text-shadow: 0 0 8px #00ff88; display: flex; align-items: center; gap: 5px; }
-.active-green::after { content: ''; width: 6px; height: 6px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 5px #00ff88; animation: blink 1s infinite; }
-
-.hud-barcode {
-    height: 10px; width: 100%; margin-top: 15px;
-    background: repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 3px);
-    opacity: 0.3;
+.main-head {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    color: #fff;
 }
 
-/* Floating Shapes */
-.floating-shape { position: absolute; z-index: -1; border: 1px solid var(--gold-main); opacity: 0.3; }
-.shape-1 { width: 100px; height: 100px; top: -20px; right: -20px; border-radius: 50%; animation: spinRing 10s linear infinite; }
-.shape-2 { width: 200px; height: 200px; bottom: -30px; left: -30px; border: 1px solid rgba(255,255,255,0.1); transform: translateZ(-50px); }
+.bio-text {
+    color: #aaa;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 40px;
+    max-width: 90%;
+}
 
+/* Icons Grid */
+.specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.spec-item i {
+    font-size: 1.5rem;
+    color: var(--gold-main);
+    background: rgba(212, 175, 55, 0.1);
+    width: 50px; height: 50px;
+    display: flex; justify-content: center; align-items: center;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.spec-item:hover i {
+    background: var(--gold-main);
+    color: #000;
+    transform: translateY(-3px);
+}
+
+.spec-item h5 { margin: 0; font-size: 1rem; color: #fff; }
+.spec-item small { color: #666; font-size: 0.85rem; }
+.status-active { color: #00ff88 !important; font-weight: bold; }
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.btn-text {
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid var(--gold-main);
+    padding-bottom: 2px;
+    transition: 0.3s;
+}
+.btn-text:hover { color: var(--gold-main); letter-spacing: 1px; }
+
+/* --- ANIMATIONS --- */
+@keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+@keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* =========================================
+   🔥 UPDATED: PHOTO CLOUD & CENTERED GLOW
+   ========================================= */
+
+/* 1. Container Setup */
+.profile-visual {
+    position: relative;
+    width: 350px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1; /* Ensures it sits above background */
+}
+
+/* 2. The Correctly Centered Glow */
+.visual-circle-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This forces true center */
+    width: 380px; /* Slightly bigger than photo */
+    height: 380px;
+    background: radial-gradient(circle, var(--gold-main) 0%, transparent 70%);
+    opacity: 0.5;
+    filter: blur(50px);
+    z-index: -1; /* Behind the photo */
+    border-radius: 50%;
+    animation: pulseGlow 4s infinite alternate;
+}
+
+/* 3. The Icons (Bubbles) */
+.tech-bubble {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid var(--gold-main);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 1.6rem;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    /* Using CSS Variable --d for random delay */
+    animation: floatRandom 5s ease-in-out infinite;
+    animation-delay: var(--d); 
+    transition: 0.3s;
+}
+
+.tech-bubble:hover {
+    transform: scale(1.2) !important;
+    background: #fff;
+    box-shadow: 0 0 20px var(--gold-main);
+    cursor: pointer;
+    z-index: 20;
+}
+
+/* --- 4. RANDOMIZED LOCATIONS (The Cloud Effect) --- */
+
+/* Top Right Cluster */
+.t-html { top: -20px; right: 20px; color: #e34c26; border-color: #e34c26; }
+.t-git  { top: 60px; right: -40px; color: #f1502f; border-color: #f1502f; width: 45px; height: 45px; font-size: 1.3rem; }
+
+/* Bottom Right Cluster */
+.t-react{ bottom: 70px; right: -30px; color: #61dbfb; border-color: #61dbfb; font-size: 1.8rem; }
+.t-node { bottom: -15   px; right: 50px; color: #68a063; border-color: #68a063; width: 45px; height: 45px; font-size: 1.2rem; }
+
+/* Bottom Left Cluster */
+.t-js   { bottom: 20px; left: -25px; color: #f7df1e; border-color: #f7df1e; }
+.t-sass { bottom: -20px; left: 60px; color: #cd6799; border-color: #cd6799; width: 40px; height: 40px; font-size: 1.1rem; }
+
+/* Top Left Cluster */
+.t-css  { top: 40px; left: -40px; color: #264de4; border-color: #264de4; }
+.t-figma{ top: -30px; left: 40px; color: #a259ff; border-color: #a259ff; width: 45px; height: 45px; font-size: 1.3rem;}
+
+
+/* 6. Animations */
+@keyframes pulseGlow {
+    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.4; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.7; }
+}
+
+@keyframes floatRandom {
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    50% { transform: translateY(-15px) translateX(5px); }
+}
 /* --- 3. TEXT ANIMATIONS (RIGHT SIDE) --- */
 .terminal-content { flex: 1.5; }
 
@@ -2035,6 +2194,30 @@ html[lang="en"] p {
 
 @media (max-width: 900px) {
     
+    .modern-profile-card {
+        flex-direction: column;
+        padding: 30px;
+        gap: 40px;
+        text-align: center;
+    }
+    
+    html[dir="rtl"] .profile-content { text-align: center; } /* Force center on mobile */
+    .bio-text { margin: 0 auto 30px; }
+
+    .profile-visual { width: 100%; height: 300px; max-width: 300px; }
+    
+    .experience-badge { right: 0; bottom: 20px; }
+    
+    .specs-grid {
+        grid-template-columns: 1fr; /* Stack icons */
+        justify-items: center; /* Center icons */
+        text-align: left; /* Keep text readable */
+    }
+    
+    /* Arabic Mobile Alignment for Grid */
+    html[dir="rtl"] .specs-grid { text-align: right; }
+    
+    .action-buttons { justify-content: center; }
     /* On mobile menu, we want BIG icons with text next to them */
     .nav-links li { width: auto; }
     
@@ -2269,4 +2452,20 @@ html[lang="en"] p {
         font-size: 1.8rem;
         color: var(--gold-main);
     }
+    .profile-visual {
+        width: 280px; 
+        height: 280px;
+        margin-bottom: 60px;
+    }
+
+    .visual-circle-glow { width: 300px; height: 300px; }
+
+    /* Pull icons closer to center on phone */
+    .t-html { top: -10px; right: 10px; }
+    .t-git  { bottom:  10px; right: 5px;} /* Hide some on mobile to reduce clutter */
+    .t-react{ bottom: 40px; right: -30px; }
+    .t-js   { bottom: 10px; left: -10px; }
+    .t-sass { bottom: -13px; left: 20px; }
+    .t-css  { top: 20px; left: -20px; }
+    .t-figma{ top: -20px; left: 20px; }
 }

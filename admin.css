@@ -2,6 +2,7 @@
     --gold: #D4AF37;
     --dark-bg: #050505;
     --glass: rgba(20, 20, 20, 0.8);
+    --alert: #ff2e63;
 }
 /* =========================================
    🔥 CUSTOM SCROLLBAR (GOLD STYLE) 🔥
@@ -638,6 +639,37 @@ html, body {
 .sidebar .logout { display: flex; margin-top: auto; }
 
 
+
+.p-img {
+    width: 70px !important;       /* Force Width */
+    height: 70px !important;      /* Force Height */
+    min-width: 70px;              /* Prevent shrinking below 70px */
+    max-width: 70px;              /* Prevent growing above 70px */
+    border-radius: 8px;
+    object-fit: cover;            /* Crop image to fit box, don't stretch */
+    border: 1px solid #333;
+    flex-shrink: 0;               /* 👈 KEY FIX: Stops flexbox from resizing it */
+    display: block;
+}
+
+/* Ensure the container doesn't overflow */
+.project-item {
+    background: #111;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #222;
+    overflow: hidden; /* Cuts off anything sticking out */
+}
+
+.p-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow: hidden; /* Protects text from pushing out */
+}
 /* =========================================
    📱 MOBILE LAYOUT: BOTTOM BAR + FITTED CONTENT
    ========================================= */
@@ -822,35 +854,4 @@ html, body {
         gap: 10px;
     }
     
-}
-/* --- FIX: ARCHIVE IMAGE SIZING --- */
-.p-img {
-    width: 70px !important;       /* Force Width */
-    height: 70px !important;      /* Force Height */
-    min-width: 70px;              /* Prevent shrinking below 70px */
-    max-width: 70px;              /* Prevent growing above 70px */
-    border-radius: 8px;
-    object-fit: cover;            /* Crop image to fit box, don't stretch */
-    border: 1px solid #333;
-    flex-shrink: 0;               /* 👈 KEY FIX: Stops flexbox from resizing it */
-    display: block;
-}
-
-/* Ensure the container doesn't overflow */
-.project-item {
-    background: #111;
-    border-radius: 10px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #222;
-    overflow: hidden; /* Cuts off anything sticking out */
-}
-
-.p-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    overflow: hidden; /* Protects text from pushing out */
 }

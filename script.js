@@ -1012,38 +1012,62 @@ function closeBill() {
     document.getElementById('billModal').classList.remove('active');
 }
 
-// 3. Confirm on WhatsApp (Flexible Format)
+/* =========================================
+   🚀 COOL WHATSAPP RECEIPT GENERATOR
+   ========================================= */
 function confirmOrderOnWhatsApp() {
-    // Collect Data
+    // 1. Collect Data
     const activeProject = document.querySelector('.type-item.active');
     const totalText = document.getElementById('billTotal').innerText;
+    const activeAddons = document.querySelectorAll('.pop-bubble.active');
     
-    let message = `مرحباً كيرلس 👋\nأريد تأكيد هذا الطلب:\n\n`;
-    message += `🧾 *فاتورة مبدئية*\n`;
-    message += `------------------\n`;
+    // Get Current Date (Egyptian Format)
+    const date = new Date().toLocaleDateString('ar-EG');
 
-    // Add Project Row IF exists
+    // 2. Build the Message (The Cool Part)
+    let message = `*مرحباً كيرلس* 👋\n`;
+    message += `أرغب في بدء مشروع جديد، إليك التفاصيل:\n\n`;
+
+    // --- Header ---
+    message += `━━━━━━━━━━━━━━━━━━\n`;
+    message += `🧾  *فــاتــورة مــبــدئــيــة* \n`;
+    message += `📅  التاريخ: ${date} \n`;
+    message += `━━━━━━━━━━━━━━━━━━\n\n`;
+
+    // --- Core Service ---
     if (activeProject) {
         const projName = activeProject.querySelector('h4').innerText;
         const projPrice = activeProject.querySelector('.price-badge').innerText.replace(/[^0-9]/g, '');
-        message += `🔹 ${projName} : ${projPrice} EGP\n`;
+        
+        message += `📌 *الخدمة الأساسية:*\n`;
+        message += `💠 *${projName}*\n`;
+        message += `   └─ 💰 ${projPrice} ج.م\n\n`;
     }
 
-    // Add Addons
-    const addons = document.querySelectorAll('.pop-bubble.active');
-    if (addons.length > 0) {
-        if(activeProject) message += `\n*--- الإضافات ---*\n`;
-        addons.forEach(addon => {
-            const name = addon.querySelector('span').innerText;
+    // --- Addons (If Any) ---
+    if (activeAddons.length > 0) {
+        message += `🔌 *الإضافات المختارة:*\n`;
+        activeAddons.forEach(addon => {
+            // Get text clean without extra spaces
+            const name = addon.querySelector('span').innerText.trim(); 
             const price = addon.querySelector('small').innerText.replace(/[^0-9]/g, '');
-            message += `🔸 ${name} : ${price} EGP\n`;
+            
+            message += `🔸 ${name}\n`;
+            message += `   └─ 💰 ${price} ج.م\n`;
         });
+        message += `\n`;
     }
 
-    message += `------------------\n`;
-    message += `💰 *الإجمالي : ${totalText}*\n\n`;
-    message += `هل يمكننا البدء؟`;
+    // --- Total Section ---
+    message += `━━━━━━━━━━━━━━━━━━\n`;
+    message += `💵 *الإجــمــالــي الــمــتــوقــع:*\n`;
+    message += `👉   *${totalText}* 👈\n`;
+    message += `━━━━━━━━━━━━━━━━━━\n\n`;
 
+    // --- Footer ---
+    message += `🚀 *هل يمكننا البدء في التنفيذ؟*`;
+
+    // 3. Send to WhatsApp
     const url = `https://wa.me/201275944732?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 }
