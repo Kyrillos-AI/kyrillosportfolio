@@ -1,3 +1,46 @@
+
+/* =========================================
+   0. FORCE SCROLL TO TOP (FIX REFRESH ISSUE)
+   ========================================= */
+// 1. Tell browser to not restore scroll position
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+/* =========================================
+   1. LENIS SMOOTH SCROLL (HIGH-END FEEL)
+   ========================================= */
+const lenis = new Lenis({
+    duration: 1.2, // مدة النعومة (كل ما الرقم زاد، النعومة زادت)
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // معادلة فيزيائية للحركة
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 1,
+    smoothTouch: false, // نوقفها ع الموبايل عشان الأداء
+    touchMultiplier: 2,
+});
+
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+
+requestAnimationFrame(raf);
+
+// ربط Lenis بـ Anchor Links (عشان لما تدوس على زرار ينزل بنعومة)
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        lenis.scrollTo(this.getAttribute('href'));
+    });
+});
+// 2. Force jump to top immediately
+window.scrollTo(0, 0);
+
+// 3. Double check when page fully loads
+window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+});
 /* =========================================
    1🌍 Translation System
    ========================================= */
@@ -291,40 +334,43 @@ function setTheme(mainColor, darkColor) {
 }
 setTheme('#D4AF37', '#AA8A2E');
 
+
 /* =========================================
    5. NEW SYSTEM PRELOADER (With Percentage)
    ========================================= */
 {
-    // Make sure scroll is locked
+    // 1. Lock Scroll & Force Top
     document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0); 
     
     const loaderWrapper = document.querySelector('.loader-wrapper');
     const percentText = document.querySelector('.loader-percent');
     
     let load = 0;
     
-    // Speed: 30ms (Fast) to 100ms (Slow). 
-    // Set to 25ms for a "bit faster" feel as requested.
+    // Speed: 25ms
     let int = setInterval(blurring, 25); 
 
     function blurring() {
         load++;
         
+        // 2. Keep forcing top while loading (Fixes some mobile browsers)
+        window.scrollTo(0, 0);
+
         if (load > 99) {
             clearInterval(int);
             
             // Fade out animation
             if(loaderWrapper) {
                 loaderWrapper.classList.add('hidden');
-                document.body.style.overflow = 'auto'; // Unlock scroll
+                // 3. Unlock scroll ONLY after loader finishes
+                document.body.style.overflow = 'auto'; 
             }
         }
         
         // Update the text
         if(percentText) {
             percentText.innerText = `${load}%`;
-            // Optional: Fade opacity of text as it reaches 100
-            // percentText.style.opacity = scale(load, 0, 100, 1, 0); 
         }
     }
 }
@@ -1113,3 +1159,207 @@ function confirmOrderOnWhatsApp() {
     const url = `https://wa.me/201275944732?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 }
+setInterval(() => {
+    const timeEl = document.getElementById('footer-time');
+    if(timeEl) timeEl.innerText = new Date().toLocaleTimeString('en-US', { hour12: false }) + " UTC";
+}, 1000);
+/* =========================================
+   🔥 SYSTEM: DYNAMIC PROJECTS LOADER (WITH LOAD MORE) 🔥
+   ========================================= */
+function loadDynamicProjects() {
+    const grid = document.querySelector('.projects-grid'); 
+    
+    if(!grid) return;
+
+    if (typeof db === 'undefined') {
+        console.error("Firebase DB is not initialized.");
+        return;
+    }
+
+    // 1. Get Data from Firebase
+    db.collection("projects").orderBy("date", "desc").onSnapshot((snapshot) => {
+        
+        grid.innerHTML = ""; // Clear existing content
+        
+        // 2. Setup Variables
+        const visibleLimit = 3; // Number of projects to show initially
+        const allDocs = snapshot.docs;
+        
+        // 3. Loop through projects
+        allDocs.forEach((doc, index) => {
+            const data = doc.data();
+            
+            // If index is 3 or more, hide it initially
+            const isHidden = index >= visibleLimit ? 'style="display:none"' : '';
+            const hiddenClass = index >= visibleLimit ? 'hidden-project' : '';
+
+            const projectHTML = `
+               <div class="project-card ${hiddenClass}" ${isHidden} data-category="${data.category}" data-aos="zoom-in-up" data-tilt>
+                    <div class="project-img" style="background: url('${data.img}') center/cover no-repeat;"></div>
+                    <div class="project-info">
+                        <h3>${data.title}</h3>
+                        <p>${data.desc}</p>
+                        <a href="${data.link}" target="_blank"><span>معاينة</span> <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                </div> 
+            `;
+            
+            grid.insertAdjacentHTML('beforeend', projectHTML);
+        });
+
+        // 4. Manage "Load More" Button
+        // Remove old button if exists to avoid duplicates
+        const oldBtn = document.getElementById('projectLoadBtnContainer');
+        if(oldBtn) oldBtn.remove();
+
+        // If we have hidden projects, add the button
+        if (allDocs.length > visibleLimit) {
+            const btnHTML = `
+                <div id="projectLoadBtnContainer" style="width:100%; text-align:center; margin-top:40px;">
+                    <button class="btn primary" onclick="revealProjects(this)">
+                        عرض المزيد <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            `;
+            // Insert button AFTER the grid
+            grid.parentNode.insertBefore(new DOMParser().parseFromString(btnHTML, 'text/html').body.firstChild, grid.nextSibling);
+        }
+
+        // Re-init animations
+        if(typeof AOS !== 'undefined') setTimeout(() => AOS.refresh(), 500);
+        if(typeof VanillaTilt !== 'undefined') VanillaTilt.init(document.querySelectorAll(".project-card"));
+    });
+}
+
+// 5. Function to Reveal Hidden Projects (Called by the button)
+function revealProjects(btn) {
+    const hiddenCards = document.querySelectorAll('.hidden-project');
+    
+    hiddenCards.forEach(card => {
+        card.style.display = 'block'; // Show card
+        card.classList.remove('hidden-project');
+        card.classList.add('aos-animate'); // Trigger animation
+    });
+
+    btn.style.display = 'none'; // Hide button after clicking
+}
+
+// Run on load
+window.addEventListener('load', loadDynamicProjects);
+/* =========================================
+   🔗 تحميل روابط السوشيال (Dynamic Socials) - FIXED
+   ========================================= */
+function loadSocialsFromDB() {
+    // التأكد من أن قاعدة البيانات تعمل
+    if (typeof db === 'undefined') {
+        console.error("Firebase DB not initialized in script.js");
+        return;
+    }
+
+    db.collection("settings").doc("socials").get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            
+            // دالة مساعدة لتحديث الرابط
+            const updateLink = (id, url) => {
+                const el = document.getElementById(id);
+                // نحدث الرابط فقط لو الأدمن حط قيمة، ولو الرابط مش فاضي
+                if (el && url && url.trim() !== "") {
+                    el.href = url;
+                }
+            };
+
+            // 1. تحديث أيقونات الـ Hero (الأيقونات العائمة)
+            updateLink('heroFb', data.facebook);
+            updateLink('heroInsta', data.instagram);
+            updateLink('heroWa', data.whatsapp);
+            updateLink('heroTiktok', data.tiktok);
+            updateLink('heroGit', data.github);
+
+            // 2. تحديث أيقونات الفوتر (تم تفعيلها الآن)
+            updateLink('footerFb', data.facebook);
+            updateLink('footerInsta', data.instagram);
+            updateLink('footerWa', data.whatsapp); // تأكد إنك غيرت الـ ID في HTML لـ footerWa
+            updateLink('footerGit', data.github);
+            
+            console.log("Social links updated form DB");
+        }
+    }).catch(error => {
+        console.log("Error getting socials:", error);
+    });
+}
+
+// تشغيل الدالة
+window.addEventListener('load', loadSocialsFromDB);
+/* --- Load Custom Profile Image --- */
+function loadProfileImage() {
+    if (typeof db === 'undefined') return;
+
+    db.collection("settings").doc("profile").onSnapshot((doc) => {
+        const imgEl = document.getElementById('aboutProfileImg');
+        if (doc.exists && doc.data().isCustom && doc.data().image) {
+            if(imgEl) imgEl.src = doc.data().image;
+        } else {
+            // Revert to default if deleted
+            if(imgEl) imgEl.src = "myphoto.png"; 
+        }
+    });
+}
+window.addEventListener('load', loadProfileImage);
+/* =========================================
+   🔥 MAIN PAGE DYNAMIC CALCULATOR
+   ========================================= */
+function initDynamicCalculator() {
+    // Check if Firebase works
+    if (typeof db === 'undefined') {
+        console.log("Firebase not loaded yet...");
+        return;
+    }
+
+    // Listen to "calculator_v3"
+    db.collection("settings").doc("calculator_v3").onSnapshot((doc) => {
+        if (!doc.exists) return;
+        
+        const data = doc.data();
+        
+        // 1. RENDER SERVICES
+        const typeContainer = document.querySelector('.types-area');
+        if (typeContainer && data.services) {
+            typeContainer.innerHTML = ""; // Clear Hardcoded Items
+            
+            data.services.forEach(item => {
+                const icon = item.icon || "fa-globe"; // Default fallback
+                
+                typeContainer.innerHTML += `
+                    <div class="pop-card type-item" onclick="selectType(${item.price}, this)">
+                        <i class="fas ${icon}"></i>
+                        <h4>${item.name}</h4>
+                        <span class="price-badge">${item.price} ج.م</span>
+                    </div>
+                `;
+            });
+        }
+
+        // 2. RENDER ADDONS
+        const addonContainer = document.querySelector('.addons-area');
+        if (addonContainer && data.addons) {
+            addonContainer.innerHTML = ""; // Clear Hardcoded Items
+            
+            data.addons.forEach(item => {
+                const icon = item.icon || "fa-plus";
+                
+                addonContainer.innerHTML += `
+                    <div class="pop-bubble" onclick="toggleAddon(${item.price}, this)">
+                        <span style="display:flex; align-items:center; gap:8px;">
+                            <i class="fas ${icon}" style="font-size:0.8rem; opacity:0.8;"></i> ${item.name}
+                        </span> 
+                        <small>+${item.price}</small>
+                    </div>
+                `;
+            });
+        }
+    });
+}
+
+// Start listener
+window.addEventListener('load', initDynamicCalculator);

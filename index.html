@@ -63,7 +63,7 @@
             <span class="color-btn" style="background: #d902ee;" onclick="setTheme('#d902ee', '#800080')"></span>
             <span class="color-btn" style="background: #ff9f1c;" onclick="setTheme('#ff9f1c', '#e05600')"></span>
             <span class="color-btn" style="background: #fc1d1d;" onclick="setTheme('#fc1d1d', '#b90000')"></span>
-            <span class="color-btn" style="background: #7bff00;" onclick="setTheme('#7bff00', '6cc518')"></span>
+            <span class="color-btn" style="background: #7bff00;" onclick="setTheme('#7bff00', '#52aa00')"></span>
         </div>
 
         <button class="btn secondary small-btn" onclick="closeThemeModal()">إغلاق</button>
@@ -76,26 +76,54 @@
    <nav class="floating-nav">
     <div class="nav-container glass">
         
- <a href="#home" class="logo-img">
-    <img src="logo.png" alt="Logo">
-</a>
+        <a href="#home" class="logo-img">
+            <img src="logo.png" alt="Logo">
+        </a>
 
         <div class="lang-switch-wrapper" onclick="toggleLanguage()">
             <span id="lang-ar" class="lang-opt active">عربي</span> 
             <span class="separator">|</span> 
             <span id="lang-en" class="lang-opt">EN</span>
         </div>
-<div class="nav-icon-btn" onclick="openThemeModal()" title="Change Theme">
-    <i class="fas fa-palette"></i>
-</div>
+
+        <div class="nav-icon-btn desktop-only" onclick="openThemeModal()" title="Change Theme">
+            <i class="fas fa-palette"></i>
+        </div>
+
         <div id="nav-clock" class="nav-clock">00:00</div>
 
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home" data-lang="nav_home">الرئيسية</a></li>
-            <li><a href="#estimator" data-lang="nav_price">اسعارى</a></li>
-            <li><a href="#work" data-lang="nav_project">أعمالي</a></li>
-            <li><a href="#contact" data-lang="nav_contact">راسلنى</a></li>
-        </ul>
+       <ul class="nav-links" id="navLinks"> 
+        <li>
+        <a href="#contact" class="nav-icon" data-tooltip="تواصل">
+            <i class="fas fa-paper-plane"></i>
+        </a>
+    </li>
+    
+    
+    <li>
+        <a href="#estimator" class="nav-icon" data-tooltip="الأسعار">
+            <i class="fas fa-calculator"></i>
+        </a>
+    </li>
+
+    <li>
+        <a href="#work" class="nav-icon" data-tooltip="أعمالي">
+            <i class="fas fa-laptop-code"></i>
+        </a>
+    </li>
+<li>
+        <a href="#home" class="nav-icon" data-tooltip="الرئيسية">
+            <i class="fas fa-home"></i>
+        </a>
+    </li>
+   
+
+    <li class="mobile-theme-item">
+        <button class="btn secondary small-btn" onclick="openThemeModal()">
+            <i class="fas fa-palette"></i> <span data-lang="settheme">تغيير الألوان</span>
+        </button>
+    </li>
+</ul>
 
         <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
     </div>
@@ -114,43 +142,117 @@
             </div>
             
             <div class="socials">
-                <a href="https://www.facebook.com/nasser.girgis.1" data-tooltip="Facbook"><i class="fab fa-facebook"></i></a>
-                <a href="https://www.instagram.com/kyronasser/" data-tooltip="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://api.whatsapp.com/send/?phone=201275944732&text&type=phone_number&app_absent=0" data-tooltip="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://www.tiktok.com/@kyronasser1?is_from_webapp=1&sender_device=pc" data-tooltip="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://github.com/Kyrillos-AI" data-tooltip="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.facebook.com/nasser.girgis.1" id="heroFb" data-tooltip="Facbook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/kyronasser/" id="heroInsta" data-tooltip="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://api.whatsapp.com/send/?phone=201275944732&text&type=phone_number&app_absent=0" id="heroWa" data-tooltip="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.tiktok.com/@kyronasser1?is_from_webapp=1&sender_device=pc" id="heroTiktok" data-tooltip="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://github.com/Kyrillos-AI" id="heroGit" data-tooltip="GitHub"><i class="fab fa-github"></i></a>
             </div>
-            <div class="cube-container">
-                <div class="cube">
-                    <div class="face front"></div><div class="face back"></div>
-                    <div class="face right"></div><div class="face left"></div>
-                    <div class="face top"></div><div class="face bottom"></div>
-                    <div class="cube-glow">K</div>
-                </div>
-            </div>
+            <div class="reactor-container">
+    
+    <div class="reactor-content">
+        <div class="reactor-ring ring-1"></div>
+        <div class="reactor-ring ring-2"></div>
+        <div class="reactor-ring ring-3"></div>
+        <div class="reactor-core">
+            <div class="core-glitch-image"></div>
+        </div>
+    </div>
+
+    <div class="reactor-content glitch-layer red">
+        <div class="reactor-ring ring-1"></div>
+        <div class="reactor-ring ring-2"></div>
+        <div class="reactor-ring ring-3"></div>
+        <div class="reactor-core">
+            <div class="core-glitch-image"></div>
+        </div>
+    </div>
+
+    <div class="reactor-content glitch-layer blue">
+        <div class="reactor-ring ring-1"></div>
+        <div class="reactor-ring ring-2"></div>
+        <div class="reactor-ring ring-3"></div>
+        <div class="reactor-core">
+            <div class="core-glitch-image"></div>
+        </div>
+    </div>
+
+</div>
         </div>
     </header>
 
-    <section id="about" class="section">
-        <div class="container about-container">
-            <div class="about-img" data-aos="fade-right">
-                <img src="myphoto.png" alt="Kyrillos">
-                <div class="img-border"></div>
-            </div>
-            <div class="about-text" data-aos="fade-left">
-                <h4 class="sub-title" data-lang="t1">من أنا؟</h4>
-                <h2> <span data-lang="about1">أنا كيرلس،</span><br><span class="text-gradient" data-lang="about2">مهندس برمجيات</span> <span data-lang="about3">شغوف بالتفاصيل.</span></h2>
-                <p data-lang="about4">لا أقوم فقط بكتابة الكود، بل أصنع تجارب رقمية حية. أدمج بين الفن البرمجي والتصميم الإبداعي لخلق مواقع لا تُنسى.</p>
-                <div class="about-info">
-                    <div><span data-lang="l2">الاسم:</span><span class="infocolor" data-lang="l2a">كيرلس</span></div>
-                    <div><span data-lang="l3">الخبرة:</span><span data-lang="l3a">+3 سنوات</span></div>
-                    <div><span data-lang="l4">الدولة:</span><span data-lang="l4a">مصر</span></div>
-                    <div><span data-lang="l5">العمل:</span><span data-lang="l5a"> متاح فريلانسر</span></div>
+<section id="about" class="section ultra-about-section">
+    <div class="cyber-grid-bg"></div>
+    
+    <div class="container about-ultra-wrapper">
+        
+        <div class="hud-card-container" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+            
+            <div class="hud-card glass">
+                <div class="screw tl"></div><div class="screw tr"></div>
+                <div class="screw bl"></div><div class="screw br"></div>
+                
+                <div class="hud-profile-img">
+                    <img src="myphoto.png" alt="Profile" id="aboutProfileImg">
+                    <div class="hud-scanner"></div>
+                    <div class="hud-overlay"></div>
                 </div>
-                <a href="#contact" class="btn primary" data-lang="cobtn">ناقش مشروعك معي</a>
+
+                <div class="hud-info">
+                    <div class="hud-row">
+                        <span class="hud-label" data-lang="l2">Name:</span>
+                        <span class="hud-val gold-text" data-lang="l2a">Kyrillos</span>
+                    </div>
+                    <div class="hud-row">
+                        <span class="hud-label" data-lang="l3">Experience:</span>
+                        <span class="hud-val" data-lang="l3a">+3 Years</span>
+                    </div>
+                    <div class="hud-row">
+                        <span class="hud-label" data-lang="l4">Country:</span>
+                        <span class="hud-val" data-lang="l4a">Egypt</span>
+                    </div>
+                    <div class="hud-row">
+                        <span class="hud-label" data-lang="l5">Work:</span>
+                        <span class="hud-val active-green" data-lang="l5a">Available</span>
+                    </div>
+                </div>
+
+                <div class="hud-barcode"></div>
+            </div>
+            
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+        </div>
+
+        <div class="terminal-content" data-aos="fade-left">
+            <h5 class="term-header">SYSTEM_LOG > PROFILE_DATA...</h5>
+            
+            <h2 class="ultra-title">
+                <span class="decode-text">THE ARCHITECT</span> <br>
+                <span class="outlined-text">OF DIGITAL REALITY</span>
+            </h2>
+
+            <div class="term-body">
+                <p class="typewriter-text" data-lang="about4">
+                    لا أقوم فقط بكتابة الكود، بل أصنع تجارب رقمية حية. أدمج بين الفن البرمجي والتصميم الإبداعي لخلق مواقع لا تُنسى.
+                </p>
+            </div>
+
+            <div class="skill-chips">
+                <span class="chip">UI/UX Design</span>
+                <span class="chip">Frontend Arch</span>
+                <span class="chip">Backend Logic</span>
+                <span class="chip">Creative Dev</span>
+            </div>
+
+            <div class="ultra-actions">
+                <a href="#contact" class="btn primary btn-glitch" data-lang="cobtn">ناقش مشروعك</a>
+                <a href="kyrillos-cv.pdf" download class="btn-text-only">تحميل الـ CV <i class="fas fa-download"></i></a>
             </div>
         </div>
-    </section>
+
+    </div>
+</section>
 
      <div class="stats-section">
         <div class="container stats-grid">
@@ -184,7 +286,7 @@
     <section id="work" class="section">
         <div class="container">
             <h2 class="section-title" data-aos="fade-up" data-lang="mywork">أحدث أعمالي</h2>
-            <div class="grid">
+            <div class="grid projects-grid">
                <div class="project-card" data-aos="zoom-in-up" data-aos-delay="200" data-tilt data-tilt-glare data-tilt-max-glare="0.3">
                     <div class="project-img" style="background: url(egyptproject.png) center/cover no-repeat;"></div>
                     <div class="project-info"><h3 data-lang="p1t">مـصـر الحـضاره</h3>
@@ -355,72 +457,100 @@
     </section>
 
   <section class="section">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up" data-lang="faqt">أسئلة شائعة</h2>
+    <div class="container">
+        <div class="section-header-group">
+            <h2 class="section-title" data-aos="fade-up" data-lang="faqt">الأسئلة الشائعة</h2>
+        </div>
+        
+        <div class="faq-grid">
             
-            <div class="faq-container">
-                <div class="faq-item" data-aos="fade-up">
-                    <div class="faq-question">
+            <div class="faq-item glass-panel" data-aos="fade-up">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">01</span>
                         <h3 data-lang="q6">كم يستغرق تصميم موقع؟</h3>
-                        <i class="fas fa-chevron-down"></i>
                     </div>
-                    <div class="faq-answer">
-                        <p data-lang="a6">يعتمد على حجم المشروع. صفحات الهبوط (Landing Pages) تستغرق 2-4 أيام، والمواقع الكاملة من أسبوع لأسبوعين حسب المتطلبات.</p>
-                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
                 </div>
-
-                <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
-                    <div class="faq-question">
-                        <h3 data-lang="q7">هل الموقع متجاوب مع الموبايل؟</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p data-lang="a7">بالتأكيد! جميع المواقع التي أصممها تعمل بكفاءة 100% على جميع الأجهزة (موبايل، تابلت، ولابتوب) وتتكيف مع أحجام الشاشات المختلفة.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
-                    <div class="faq-question">
-                        <h3 data-lang="q8">هل يمكنني طلب تعديلات لاحقاً؟</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p data-lang="a8">نعم، أقدم دعم فني مجاني لمدة أسبوع بعد التسليم لضمان رضاك التام، وأي تعديلات جوهرية يمكن الاتفاق عليها بسهولة.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="faq-question">
-                        <h3 data-lang="q9">هل توفر الاستضافة والدومين؟</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p data-lang="a9">أنا أساعدك في اختيار وشراء أفضل استضافة تناسب مشروعك، وأقوم بربط الدومين ورفع ملفات الموقع مجاناً كجزء من الخدمة.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
-                    <div class="faq-question">
-                        <h3 data-lang="q10">كيف يتم الدفع وضمان الحقوق؟</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p data-lang="a10">العمل يتم عبر منصات مضمونة مثل (مستقل) أو (خمسات)، حيث تضمن المنصة حق الطرفين ولا يتم تحويل المبلغ إلا بعد استلامك للمشروع كاملاً.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item" data-aos="fade-up" data-aos-delay="500">
-                    <div class="faq-question">
-                        <h3 data-lang="q11">ماذا لو حدث خطأ في الموقع مستقبلاً؟</h3>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="faq-answer">
-                        <p data-lang="a11">أكوادنا نظيفة ومستقرة، ولكن في حال حدوث أي خطأ تقني مفاجئ، يمكنك التواصل معي في أي وقت للصيانة الفورية.</p>
-                    </div>
+                <div class="faq-answer">
+                    <p data-lang="a6">يعتمد على حجم المشروع. صفحات الهبوط (Landing Pages) تستغرق 2-4 أيام، والمواقع الكاملة من أسبوع لأسبوعين حسب المتطلبات.</p>
+                    <div class="faq-decor-line"></div>
                 </div>
             </div>
+
+            <div class="faq-item glass-panel" data-aos="fade-up" data-aos-delay="100">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">02</span>
+                        <h3 data-lang="q7">هل الموقع متجاوب مع الموبايل؟</h3>
+                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p data-lang="a7">بالتأكيد! جميع المواقع التي أصممها تعمل بكفاءة 100% على جميع الأجهزة (موبايل، تابلت، ولابتوب) وتتكيف مع أحجام الشاشات المختلفة.</p>
+                    <div class="faq-decor-line"></div>
+                </div>
+            </div>
+
+            <div class="faq-item glass-panel" data-aos="fade-up" data-aos-delay="200">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">03</span>
+                        <h3 data-lang="q8">هل يمكنني طلب تعديلات لاحقاً؟</h3>
+                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p data-lang="a8">نعم، أقدم دعم فني مجاني لمدة أسبوع بعد التسليم لضمان رضاك التام، وأي تعديلات جوهرية يمكن الاتفاق عليها بسهولة.</p>
+                    <div class="faq-decor-line"></div>
+                </div>
+            </div>
+
+            <div class="faq-item glass-panel" data-aos="fade-up" data-aos-delay="300">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">04</span>
+                        <h3 data-lang="q9">هل توفر الاستضافة والدومين؟</h3>
+                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p data-lang="a9">أنا أساعدك في اختيار وشراء أفضل استضافة تناسب مشروعك، وأقوم بربط الدومين ورفع ملفات الموقع مجاناً كجزء من الخدمة.</p>
+                    <div class="faq-decor-line"></div>
+                </div>
+            </div>
+
+             <div class="faq-item glass-panel" data-aos="fade-up" data-aos-delay="400">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">05</span>
+                        <h3 data-lang="q10">كيف يتم الدفع وضمان الحقوق؟</h3>
+                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p data-lang="a10">العمل يتم عبر منصات مضمونة مثل (مستقل) أو (خمسات)، حيث تضمن المنصة حق الطرفين ولا يتم تحويل المبلغ إلا بعد استلامك للمشروع كاملاً.</p>
+                    <div class="faq-decor-line"></div>
+                </div>
+            </div>
+
+            <div class="faq-item glass-panel" data-aos="fade-up" data-aos-delay="500">
+                <div class="faq-question">
+                    <div class="q-content">
+                        <span class="faq-num">06</span>
+                        <h3 data-lang="q11">ماذا لو حدث خطأ في الموقع مستقبلاً؟</h3>
+                    </div>
+                    <div class="faq-toggle"><i class="fas fa-plus"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <p data-lang="a11">أكوادنا نظيفة ومستقرة، ولكن في حال حدوث أي خطأ تقني مفاجئ، يمكنك التواصل معي في أي وقت للصيانة الفورية.</p>
+                    <div class="faq-decor-line"></div>
+                </div>
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
 <section class="section" id="estimator">
     <div class="container">
         <h2 class="section-title" data-aos="fade-up">اختر مكونات مشروعك</h2>
@@ -432,49 +562,7 @@
             </div>
 
             <div class="pop-grid types-area">
-                <div class="pop-card type-item" onclick="selectType(400, this)">
-                    <i class="fas fa-rocket"></i>
-                    <h4>Landing Page</h4>
-                    <span class="price-badge">400 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(600, this)">
-                    <i class="fas fa-id-card"></i>
-                    <h4>CV / Portfolio</h4>
-                    <span class="price-badge">600 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(1000, this)">
-                    <i class="fas fa-blog"></i>
-                    <h4>مدونة شخصية</h4>
-                    <span class="price-badge">1000 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(1500, this)">
-                    <i class="fas fa-building"></i>
-                    <h4>موقع شركة (Start)</h4>
-                    <span class="price-badge">1500 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(2500, this)">
-                    <i class="fas fa-city"></i>
-                    <h4>موقع شركة (Pro)</h4>
-                    <span class="price-badge">2500 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(3000, this)">
-                    <i class="fas fa-store"></i>
-                    <h4>متجر (Basic)</h4>
-                    <span class="price-badge">3000 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(5000, this)">
-                    <i class="fas fa-gem"></i>
-                    <h4>متجر (Premium)</h4>
-                    <span class="price-badge">5000 ج.م</span>
-                </div>
-                <div class="pop-card type-item" onclick="selectType(200, this)">
-                    <i class="fas fa-wrench"></i>
-                    <h4>إصلاحات / Bug Fix</h4>
-                    <span class="price-badge">200 ج.م</span>
-                </div>
-                
-                
-            </div>
+    </div>
 
             <hr class="est-divider-glow">
 
@@ -483,38 +571,7 @@
             </div>
             
             <div class="pop-grid addons-area">
-                <div class="pop-bubble" onclick="toggleAddon(200, this)">
-                    <span>🎨 لوجو احترافي</span> <small>+200</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(150, this)">
-                    <span>🌙 وضع ليلي (Dark)</span> <small>+150</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(300, this)">
-                    <span>🌐 لغة ثانية (En)</span> <small>+300</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(200, this)">
-                    <span>🔍 SEO جوجل</span> <small>+200</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(100, this)">
-                    <span>⚡ تسريع خارق</span> <small>+100</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(150, this)">
-                    <span>💬 زر واتساب</span> <small>+150</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(200, this)">
-                    <span>☁️ حجز استضافة</span> <small>+200</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(500, this)">
-                    <span>🚀 تسليم مستعجل</span> <small>+500</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(150, this)">
-                    <span>🔗 سوشيال ميديا</span> <small>+150</small>
-                </div>
-                <div class="pop-bubble" onclick="toggleAddon(100, this)">
-                    <span>🔒 حماية SSL</span> <small>+100</small>
-                </div>
-                
-            </div>
+    </div>
 
             <div class="est-result-bar">
                 <div class="result-text">
@@ -555,7 +612,60 @@
         </div>
     </section>
 
-    <footer><p data-lang="credit">جميع الحقوق محفوظة &copy; 2025 كيرلس</p></footer>
+   <footer class="cyber-footer">
+    
+    <div class="footer-ticker">
+        <div class="ticker-track">
+            <span>/// النظام يعمل بكفاءة ///</span>
+            <span>متاح لاستلام مشاريع جديدة</span>
+            <span>/// ابدأ بروتوكول الاتصال ///</span>
+            <span>تصميم + تطوير + إطلاق</span>
+            <span>/// النظام يعمل بكفاءة ///</span>
+            <span>متاح لاستلام مشاريع جديدة</span>
+        </div>
+    </div>
+
+    <div class="container footer-grid">
+        
+        <div class="footer-col brand-col">
+            <div class="footer-logo">
+                <img src="logo.png" alt="Logo">
+                <h2 class="glitch-text-sm" data-text="كيرلس">كيرلس</h2>
+            </div>
+            <p class="footer-bio" data-lang="about4">
+                مهندس برمجيات متخصص في بناء تجارب رقمية حية. أصنع واجهات المستخدم بدقة، وأطور أنظمة قوية تعمل بكفاءة.
+            </p>
+        </div>
+
+        <div class="footer-col links-col">
+            <h4 class="col-title">>> مسار_التصفح</h4>
+            <ul class="footer-links">
+                <li><a href="#home">/الرئيسية</a></li>
+                <li><a href="#about">/بيانات_الهوية</a></li>
+                <li><a href="#work">/قاعدة_المشاريع</a></li>
+                <li><a href="#contact">/بدء_اتصال</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col social-col">
+            <h4 class="col-title">>> نقاط_الشبكة</h4>
+            <div class="footer-socials">
+                <a href="#" id="footerFb" class="f-social"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" id="footerInsta" class="f-social"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="f-social"><i class="fab fa-github"></i></a>
+            </div>
+            <p class="server-time">توقيت السيرفر: <span id="footer-time" dir="ltr">00:00:00 UTC</span></p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p data-lang="credit">جميع الحقوق محفوظة © 2025 كيرلس // تم التطوير بشغف.</p>
+        <a href="admin.html" class="admin-lock" title="Admin Login">
+        <i class="fas fa-lock"></i>
+    </a>
+    </div>
+</footer>
     
     <div class="smart-wa-wrapper">
     
@@ -614,6 +724,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="script.js"></script>
     <div id="billModal" class="bill-overlay">
     <div class="bill-container glass">
