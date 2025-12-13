@@ -187,7 +187,7 @@ dropZone.addEventListener('drop', (e) => {
 
 function handleFile(file) {
     if (file && file.type.startsWith('image/')) {
-        if (file.size > 800 * 1024) {
+        if (file.size > 600 * 1024) {
             showAlert("الصورة كبيرة جداً! يرجى استخدام صورة أقل من 1 ميجابايت.", "تحذير الحجم", "fa-exclamation-triangle");
         }
         selectedFile = file;
