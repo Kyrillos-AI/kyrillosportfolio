@@ -945,13 +945,15 @@ function updateTotal() {
 /* =========================================
    🧾 Bill Generator Logic (Fixed)
    ========================================= */
-
+/* =========================================
+   🧾 Bill Generator Logic (Fixed Scroll + Icons + Date)
+   ========================================= */
 function showBill() {
     const billModal = document.getElementById('billModal');
     const billItemsContainer = document.getElementById('billItems');
     const billTotalEl = document.getElementById('billTotal');
     
-    // 1. Get Active Selection
+    // 1. Get Active Items
     const activeProject = document.querySelector('.type-item.active');
     const activeAddons = document.querySelectorAll('.pop-bubble.active');
 
@@ -960,34 +962,33 @@ function showBill() {
         return;
     }
 
-    // 🔥 FIX 1: Lock Background Scroll
+    // 2. Lock Background Scroll (Important!)
     document.body.style.overflow = 'hidden';
 
-    // 2. Prepare Data
+    // 3. Reset Bill
     billItemsContainer.innerHTML = '';
     let finalBillTotal = 0;
 
-    // 🔥 FIX 2: Add Date & Time
+    // --- NEW: Add Date & Time Header ---
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
     const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-    // Insert Date Row
     billItemsContainer.innerHTML += `
-        <div class="bill-row" style="opacity: 0.7; font-size: 0.8rem; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #444; justify-content: center; gap: 15px;">
-            <span>📅 ${dateStr}</span>
-            <span>⏰ ${timeStr}</span>
+        <div class="bill-row" style="opacity: 0.6; font-size: 0.75rem; border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 8px; justify-content: center; gap: 15px;">
+           <span>📅 ${dateStr}</span>
+           <span>⏰ ${timeStr}</span>
         </div>
     `;
 
-    // 3. Add Main Project (With synced Icon)
+    // 4. Add Main Project (With Correct Icon)
     if (activeProject) {
         const projName = activeProject.querySelector('h4').innerText;
         const projPriceText = activeProject.querySelector('.price-badge').innerText;
         const projPriceVal = parseInt(projPriceText.replace(/[^0-9]/g, ''));
         
-        // 🔥 FIX 3: Get the exact icon class
-        const iconClass = activeProject.querySelector('i').className;
+        // 🔥 GRAB ICON: Find the <i> tag inside the active card
+        const iconClass = activeProject.querySelector('i').className; 
 
         finalBillTotal += projPriceVal;
 
@@ -1002,34 +1003,30 @@ function showBill() {
         `;
     }
 
-    // 4. Add Addons (With synced Icons)
+    // 5. Add Addons (With Correct Icons)
     if (activeAddons.length > 0) {
-        // Label if no project selected
         if(!activeProject) {
              billItemsContainer.innerHTML += `<div class="bill-row" style="border:none; color:#666; font-size:0.75rem; justify-content:center;">-- خدمات إضافية --</div>`;
         }
 
         activeAddons.forEach(addon => {
-            // Get text and clean it (remove price from name)
-            let fullText = addon.innerText; 
-            // Usually innerText is "Icon Name +Price". We just want "Name".
-            // Since your HTML structure in JS generation might vary, let's grab the name safely:
-            // Assuming structure: <span> <i class="..."></i> Name </span>
+            // Get Name (Clean up the text inside)
+            // Depending on your HTML, the text might be inside a span or direct
             const nameSpan = addon.querySelector('span'); 
-            const addonName = nameSpan ? nameSpan.innerText : "إضافة";
-            
+            const addonName = nameSpan ? nameSpan.innerText.trim() : addon.innerText.replace(/[0-9]/g, '').trim();
+
             const addonPriceText = addon.querySelector('small').innerText;
             const addonPriceVal = parseInt(addonPriceText.replace(/[^0-9]/g, ''));
             
-            // Get Icon
-            const addonIcon = addon.querySelector('i').className;
+            // 🔥 GRAB ICON
+            const addonIconClass = addon.querySelector('i').className;
 
             finalBillTotal += addonPriceVal;
 
             billItemsContainer.innerHTML += `
                 <div class="bill-row">
                     <span style="display:flex; align-items:center; gap:8px;">
-                        <i class="${addonIcon}" style="color:#888; width:20px; text-align:center; font-size:0.8rem;"></i>
+                        <i class="${addonIconClass}" style="color:#888; width:20px; text-align:center; font-size:0.8rem;"></i>
                         ${addonName}
                     </span>
                     <span>${addonPriceVal}</span>
@@ -1038,13 +1035,18 @@ function showBill() {
         });
     }
 
-    // 5. Final Total
+    // 6. Update Total
     billTotalEl.innerText = finalBillTotal + " ج.م";
 
     // Show Modal
     billModal.classList.add('active');
 }
 
+// Ensure Close Function unlocks scroll
+function closeBill() {
+    document.getElementById('billModal').classList.remove('active');
+    document.body.style.overflow = 'auto'; // Unlock scroll
+}
 function closeBill() {
     document.getElementById('billModal').classList.remove('active');
     
@@ -1086,22 +1088,23 @@ function confirmOrderOnWhatsApp() {
     const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
     // --- 3. Build The "Cyber Receipt" ---
-    let message = `*👋 مرحباً كيرلس* \n`;
-    message += `أريد تأكيد طلب جديد، إليك الفاتورة:\n\n`;
-
+    
+let message = `*مرحبا كيرلس👋 \n`;
     // HEADER
     message += `╔══════════════════╗\n`;
-    message += `║   🧾 *DIGITAL INVOICE* ║\n`;
+    message += `║🧾 *    تـاريـخ الطـلـب* ║\n`;
     message += `║   📅 ${date} • ${time}   ║\n`;
     message += `╚══════════════════╝\n\n`;
 
+
+    message += `أريد طلب جديد، إليك التفاصيل:\n\n`;
     // MAIN PROJECT
     if (activeProject) {
         const projName = activeProject.querySelector('h4').innerText;
         const projPrice = activeProject.querySelector('.price-badge').innerText.replace(/[^0-9]/g, '');
         const emoji = getEmoji(activeProject);
-
-        message += `📦 *الخدمة الأساسية:*\n`;
+        message += `━━━━━━━━━━━━━━━━━━\n`;
+        message += `🌐 *المشروع :*\n`;
         message += `━━━━━━━━━━━━━━━━━━\n`;
         message += `${emoji} *${projName}*\n`;
         message += `   └─ 🏷️ ${projPrice} EGP\n\n`;
@@ -1109,7 +1112,8 @@ function confirmOrderOnWhatsApp() {
 
     // ADDONS
     if (activeAddons.length > 0) {
-        message += `🔌 *الإضافات والتحسينات:*\n`;
+        message += `━━━━━━━━━━━━━━━━━━\n`;
+        message += `➕ *الإضافات والتحسينات:*\n`;
         message += `━━━━━━━━━━━━━━━━━━\n`;
         
         activeAddons.forEach(addon => {
@@ -1125,8 +1129,8 @@ function confirmOrderOnWhatsApp() {
 
     // TOTAL
     message += `╭──────────────────╮\n`;
-    message += `│  💰 *الإجــمــالــي:* \n`;
-    message += `│  👉 *${totalText}* \n`;
+    message += `│  💰 *الإجمالي:* \n`;
+    message += `│  👈 *${totalText}* \n`;
     message += `╰──────────────────╯\n\n`;
 
     // FOOTER
