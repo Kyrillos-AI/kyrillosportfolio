@@ -689,6 +689,9 @@
         <div class="alert-box glass">
             <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
             <h3 id="alertTitle">تنبيه</h3><p id="alertMessage">...</p>
+            <a id="alertActionBtn" class="btn secondary small-btn" target="_blank" style="display:none; margin: 10px auto; text-decoration:none; background: #25D366; color: #fff; border-color: #25D366;">
+            <i class="fab fa-whatsapp"></i> فتح واتساب
+        </a>
             <button class="btn primary small-btn" onclick="closeCustomAlert()">حسناً</button>
         </div>
     </div>
@@ -746,6 +749,9 @@
 
         <div class="bill-footer">
             <p>عند تأكيد الطلب، سيتم تحويلك للواتساب بهذه التفاصيل.</p>
+            <input type="text" id="customerName" placeholder="Customer Name" required>
+            <input type="number" id="customerPhone" placeholder="Phone Number (e.g. 201xxxxxxxxx)" required>
+            
             <button class="btn primary full-width" onclick="confirmOrderOnWhatsApp()">
                 <i class="fab fa-whatsapp"></i> تأكيد وإرسال الفاتورة
             </button>

@@ -83,6 +83,9 @@ function checkLogin() {
                 loginModal.style.display = 'none';
                 dashboard.style.display = 'flex'; // استخدام flex عشان الـ layout الجديد
                 loadSocials();
+                loadAdminStats();
+                loadAdminReviews();
+                loadOrdersManager();
             }, 500);
         } else {
             errorMsg.innerText = "❌ كلمه السر غير صحيحه!";
@@ -602,7 +605,7 @@ function saveAllCalculatorData() {
         btn.innerHTML = oldText;
     }).catch(err => {
         console.error("Save Error:", err);
-        showAlert("حدث خطأ في الحفظ (راجع الكونسول)", "خطأ");
+        showAlert("حدث خطأ في الحفظ (حاول مره اخرى)", "خطأ");
         btn.innerHTML = oldText;
     });
 }
@@ -623,3 +626,285 @@ function loadCalcData() {
 
 // Run on Load
 document.addEventListener('DOMContentLoaded', () => setTimeout(loadCalcData, 1000));
+
+/* =========================================
+   📊 STATS & STATUS LOGIC
+   ========================================= */
+
+function loadAdminStats() {
+    // 1. Listen for Visitor Count
+    db.collection("stats").doc("visits").onSnapshot((doc) => {
+        if (doc.exists) {
+            const count = doc.data().count || 0;
+            const el = document.getElementById('totalViews');
+            if(el) el.innerText = count;
+        }
+    });
+
+    // 2. Listen for Status
+    db.collection("settings").doc("status").onSnapshot((doc) => {
+        if (doc.exists) {
+            const state = doc.data().state;
+            const textEl = document.getElementById('currentStatusText');
+            const icon = document.getElementById('statusIcon');
+            const iconBg = document.getElementById('statusIconBg');
+
+            if (state === 'available') {
+                textEl.innerHTML = '<span style="color:#00ff88">● النظام متاح لاستقبال مشاريع</span>';
+                icon.style.color = "#00ff88";
+                iconBg.style.background = "rgba(0, 255, 136, 0.1)";
+            } else {
+                textEl.innerHTML = '<span style="color:#ff2e63">● النظام مغلق (مشغول)</span>';
+                icon.style.color = "#ff2e63";
+                iconBg.style.background = "rgba(255, 46, 99, 0.1)";
+            }
+        }
+    });
+}
+
+function updateStatus(state) {
+    db.collection("settings").doc("status").set({
+        state: state
+    }, { merge: true }).then(() => {
+        showAlert(state === 'available' ? "تم تفعيل وضع: متاح ✅" : "تم تفعيل وضع: مشغول ⛔", "تم التحديث");
+    });
+}
+/* =========================================
+   ⭐ REVIEW MODERATION SYSTEM
+   ========================================= */
+
+// 1. Load Reviews Live
+function loadAdminReviews() {
+    const list = document.getElementById("adminReviewsList");
+    
+    db.collection("reviews").orderBy("date", "desc").onSnapshot((snapshot) => {
+        list.innerHTML = ""; // Clear list
+
+        if(snapshot.empty) {
+            list.innerHTML = "<p style='color:#666;'>لا توجد تقييمات حالياً.</p>";
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+
+            // Generate Stars HTML
+            let starsHTML = '';
+            for(let i=1; i<=5; i++) {
+                if(data.rating >= i) starsHTML += '<i class="fas fa-star" style="color:var(--gold)"></i>';
+                else if (data.rating >= i - 0.5) starsHTML += '<i class="fas fa-star-half-alt" style="color:var(--gold)"></i>';
+                else starsHTML += '<i class="far fa-star" style="color:#444"></i>';
+            }
+
+            const card = document.createElement('div');
+            card.style.cssText = "background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:20px; border-radius:10px; position:relative;";
+            
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                    <h4 style="margin:0; color:#fff;">${data.name}</h4>
+                    <span style="background:#222; padding:2px 8px; border-radius:5px; font-size:0.8rem; color:#888;">${data.role || 'Client'}</span>
+                </div>
+                <div style="margin-bottom:10px;">${starsHTML}</div>
+                <p style="color:#ccc; font-size:0.95rem; line-height:1.6; margin-bottom:15px;">"${data.text}"</p>
+                
+                <button onclick="deleteReview('${id}')" class="btn-del" style="width:100%;">
+                    <i class="fas fa-trash"></i> حذف التقييم
+                </button>
+            `;
+            list.appendChild(card);
+        });
+    });
+}
+
+// 2. Delete Review Function
+window.deleteReview = function(id) {
+    showConfirm(
+        "حذف التقييم؟",
+        "سيتم إزالة هذا التقييم نهائياً من الموقع. هل أنت متأكد؟",
+        function() {
+            db.collection("reviews").doc(id).delete().then(() => {
+                showAlert("تم حذف التقييم بنجاح!", "تم الحذف", "fa-check-circle");
+            }).catch(err => {
+                showAlert("حدث خطأ: " + err.message, "خطأ");
+            });
+        }
+    );
+}
+
+/* =========================================
+   📦 ORDER MANAGEMENT SYSTEM (FIXED)
+   ========================================= */
+
+let allOrdersData = []; // Store orders globally for filtering
+
+function loadOrdersManager() {
+    // Listen to "orders" collection
+    db.collection("orders").orderBy("date", "desc").onSnapshot((snapshot) => {
+        allOrdersData = []; // Reset global data
+        
+        snapshot.forEach((doc) => {
+            let order = doc.data();
+            order.id = doc.id; // Save ID inside the object
+            allOrdersData.push(order);
+        });
+
+        // Render all orders initially
+        renderOrders(allOrdersData);
+        
+        // Update Stats Counters
+        loadOrderStats();
+    });
+}
+
+// Helper function to render the list (used by Filter)
+function renderOrders(ordersToRender) {
+    const list = document.getElementById("ordersList");
+    list.innerHTML = ""; 
+
+    if(ordersToRender.length === 0) {
+        list.innerHTML = "<p style='text-align:center; color:#666;'>لا توجد طلبات.</p>";
+        return;
+    }
+
+    ordersToRender.forEach((data) => {
+        // Color Code Status
+        let statusBadge = '';
+        let actionBtns = '';
+        let whatsappBtn = ''; // Reset button variable
+
+        if(data.status === 'pending') {
+            statusBadge = '<span class="badge" style="background:#ffd700; color:#000;">قيد الانتظار ⏳</span>';
+            actionBtns = `
+                <button class="btn-cyber small-btn" onclick="updateOrderStatus('${data.id}', 'confirmed')" style="border-color:#00ff88; color:#00ff88;"> تأكيد ✅</button>
+                <button class="btn-cyber small-btn" onclick="updateOrderStatus('${data.id}', 'cancelled')" style="border-color:#ff2e63; color:#ff2e63;"> إلغاء ❌</button>
+            `;
+        } else if (data.status === 'confirmed') {
+            statusBadge = '<span class="badge" style="background:#00ff88; color:#000;">تم التأكيد ✅</span>';
+            actionBtns = `<small style="color:#666;">مكتمل</small>`;
+            
+            // ✅ 2. WHATSAPP BUTTON LOGIC (Added Here)
+            if(data.phone) {
+                // Remove special chars if any, ensure it works with WhatsApp
+                whatsappBtn = `
+                    <a href="https://wa.me/20${data.phone}" target="_blank" style="
+                        display: inline-block; margin-top: 5px; padding: 5px 10px; 
+                        background-color: #25D366; color: white; text-decoration: none; 
+                        border-radius: 5px; font-weight: bold; font-size: 0.8rem;">
+                        <i class="fab fa-whatsapp"></i> تواصل واتساب
+                    </a>
+                `;
+            }
+        } else {
+            statusBadge = '<span class="badge" style="background:#ff2e63; color:#fff;">ملغي ❌</span>';
+            actionBtns = `<small style="color:#666;">مرفوض</small>`;
+        }
+
+        // Format Date
+        const dateObj = data.date ? data.date.toDate() : new Date();
+        const dateStr = dateObj.toLocaleDateString('ar-EG');
+
+        // Note: I added data.customerName and data.phone below
+        const itemHTML = `
+            <div class="glass-panel" style="border:1px solid #333; padding:15px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:15px;">
+                
+                <div style="flex: 1;">
+                    <h4 style="margin:0 0 5px 0; color:#fff;">${data.customerName || data.client}</h4> 
+                    <small style="color:#888;">${dateStr} • ${data.phone || 'No Phone'}</small>
+                    <div style="margin-top:5px; font-size:0.9rem; color:#ccc;">
+                        ${Array.isArray(data.items) ? data.items.join('<br>') : data.items}
+                    </div>
+                    ${whatsappBtn} </div>
+
+                <div style="text-align:left; min-width:120px;">
+                    <div style="font-size:1.2rem; font-weight:bold; color:var(--gold); margin-bottom:5px;">${data.total}</div>
+                    <div style="margin-bottom:10px;">${statusBadge}</div>
+                    <div style="display:flex; gap:5px;">${actionBtns}</div>
+                </div>
+
+            </div>
+        `;
+        list.innerHTML += itemHTML;
+    });
+}
+/* =========================================
+   ✅ إصلاح شامل: الفلتر، الحذف، والتحديث
+   (ضع هذا الكود في نهاية ملف admin.js)
+   ========================================= */
+
+// 1. فلتر الطلبات (عشان لما تضغط على مربع الأرباح يفلتر)
+window.filterOrders = function(statusToFilter) {
+    // نتأكد إن الداتا موجودة
+    if (!allOrdersData) return;
+
+    const list = document.getElementById("ordersList");
+    
+    // رسالة تحميل صغيرة عشان تعرف إن فيه حاجة بتحصل
+    list.innerHTML = '<p style="text-align:center; padding:20px; color:#888;">↻ جاري التحديث...</p>';
+
+    setTimeout(() => {
+        let filteredList = [];
+
+        // لو اخترنا "عرض الكل" بنعرض كله، غير كده بنفلتر حسب الحالة
+        if(statusToFilter === 'all') {
+            filteredList = allOrdersData;
+        } else {
+            filteredList = allOrdersData.filter(order => order.status === statusToFilter);
+        }
+
+        // إعادة رسم الطلبات
+        renderOrders(filteredList);
+    }, 200);
+}
+
+// 2. حذف كل البيانات (تفعيل الزر الأحمر)
+window.clearAllData = function() {
+    showConfirm(
+        "⚠️ حذف كل البيانات؟", 
+        "هل أنت متأكد أنك تريد حذف جميع الطلبات؟ لا يمكن التراجع عن هذا الإجراء.",
+        function() {
+            // كود الحذف الفعلي من فايربيز
+            db.collection("orders").get().then((querySnapshot) => {
+                if(querySnapshot.empty) {
+                    showAlert("لا توجد طلبات لحذفها.", "تنبيه");
+                    return;
+                }
+                const batch = db.batch();
+                querySnapshot.forEach((doc) => { batch.delete(doc.ref); });
+                return batch.commit();
+            }).then(() => {
+                showAlert("تم حذف جميع الطلبات بنجاح.", "تم الحذف", "fa-trash");
+                // العدادات هتتحدث لوحدها تلقائي
+            }).catch((error) => {
+                showAlert("حدث خطأ: " + error.message, "خطأ");
+            });
+        }
+    );
+}
+
+// 3. تحديث حالة الطلب (تفعيل أزرار تأكيد وإلغاء)
+window.updateOrderStatus = function(orderId, newStatus) {
+    db.collection("orders").doc(orderId).update({
+        status: newStatus
+    }).then(() => {
+        const msg = newStatus === 'confirmed' ? "تم تأكيد الطلب بنجاح ✅" : "تم إلغاء الطلب ❌";
+        showAlert(msg, "تم التحديث", newStatus === 'confirmed' ? "fa-check-circle" : "fa-times-circle");
+    }).catch((error) => {
+        showAlert("حدث خطأ: " + error.message, "خطأ", "fa-exclamation-triangle");
+    });
+}
+
+// 4. حساب الإحصائيات (عشان الأرقام اللي فوق تتضبط)
+window.loadOrderStats = function() {
+    if (!allOrdersData) return;
+    
+    const receivedCount = allOrdersData.length;
+    // عد الطلبات المؤكدة فقط
+    const confirmedCount = allOrdersData.filter(order => order.status === 'confirmed').length;
+
+    const recEl = document.getElementById('statReceived');
+    const confEl = document.getElementById('statConfirmed');
+    
+    if(recEl) recEl.innerText = receivedCount;
+    if(confEl) confEl.innerText = confirmedCount;
+}

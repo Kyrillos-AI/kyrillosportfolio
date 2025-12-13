@@ -42,6 +42,25 @@ window.addEventListener('load', function() {
     window.scrollTo(0, 0);
 });
 /* =========================================
+   🔥 FIREBASE MASTER SETUP (تشغيل فايربيز مرة واحدة فقط)
+   ========================================= */
+const firebaseConfig = {
+    apiKey: "AIzaSyANz8dBPKkSD6mqTuVk77WLRqsVQ1hVlog",
+    authDomain: "kyrillos-protifolio.firebaseapp.com",
+    projectId: "kyrillos-protifolio",
+    storageBucket: "kyrillos-protifolio.firebasestorage.app",
+    messagingSenderId: "154071914816",
+    appId: "1:154071914816:web:b246ca0b0aada5db3502a5",
+    measurementId: "G-64M0V7QRPO"
+};
+
+// هنا بنقوله: لو مفيش تطبيقات شغالة، ابدأ شغل واحد. لو فيه، كمل عادي.
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+// بنعرف المتغير db مرة واحدة عشان نستخدمه في كل الملف
+const db = firebase.firestore();
+/* =========================================
    1🌍 Translation System
    ========================================= */
 let currentLang = 'ar'; // اللغة الافتراضية
@@ -471,53 +490,37 @@ document.querySelectorAll(".faq-item").forEach(faq => {
 });
 
 /* =========================================
-   10. Custom Alerts & Context Menu
+   UPDATED ALERT SYSTEM (With Button Support)
    ========================================= */
-const customAlert = document.getElementById('customAlert');
-const alertMsg = document.getElementById('alertMessage');
-const alertTitle = document.getElementById('alertTitle');
+function showCustomAlert(message, title = "تنبيه", btnText = null, btnLink = null) {
+    const alertBox = document.getElementById('customAlert');
+    const msgEl = document.getElementById('alertMessage'); // Note: ID in HTML is 'alertMessage'
+    const titleEl = document.getElementById('alertTitle');
+    const actionBtn = document.getElementById('alertActionBtn');
+    
+    if(msgEl) msgEl.innerText = message;
+    if(titleEl) titleEl.innerText = title;
 
-function showCustomAlert(message, title = "تنبيه النظام") {
-    if(alertMsg) alertMsg.innerText = message;
-    if(alertTitle) alertTitle.innerText = title;
-    if(customAlert) customAlert.classList.add('active');
-}
-function closeCustomAlert() { 
-    if(customAlert) customAlert.classList.remove('active'); 
-}
-if(customAlert) customAlert.addEventListener('click', (e) => { if (e.target === customAlert) closeCustomAlert(); });
-
-const contextMenu = document.getElementById("contextMenu");
-document.body.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
-    if(contextMenu) {
-        const { clientX: mouseX, clientY: mouseY } = event;
-        const menuWidth = contextMenu.offsetWidth || 200;
-        const menuHeight = contextMenu.offsetHeight || 300;
-        
-        if (mouseX + menuWidth > window.innerWidth) contextMenu.style.left = `${mouseX - menuWidth}px`;
-        else contextMenu.style.left = `${mouseX}px`;
-        
-        if (mouseY + menuHeight > window.innerHeight) contextMenu.style.top = `${mouseY - menuHeight}px`;
-        else contextMenu.style.top = `${mouseY}px`;
-        
-        contextMenu.classList.add("visible");
+    // Logic to Show/Hide the WhatsApp Button
+    if(actionBtn) {
+        if(btnText && btnLink) {
+            actionBtn.style.display = 'inline-flex'; // Show button
+            actionBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${btnText}`;
+            actionBtn.href = btnLink;
+        } else {
+            actionBtn.style.display = 'none'; // Hide button
+            actionBtn.href = '#';
+        }
     }
-});
 
-document.body.addEventListener("click", (e) => {
-    if (contextMenu && e.target.offsetParent != contextMenu) contextMenu.classList.remove("visible");
-});
-
-function copyEmail() {
-    navigator.clipboard.writeText("aboukeroazmy2@gmail.com");
-    showCustomAlert("تم نسخ البريد الإلكتروني بنجاح!", "عملية ناجحة");
+    if(alertBox) alertBox.classList.add('active');
 }
-function copyLink() {
-    navigator.clipboard.writeText(window.location.href);
-    showCustomAlert("تم نسخ رابط الموقع بنجاح!", "مشاركة الرابط");
+window.closeCustomAlert = function() {
+    const alertBox = document.getElementById('customAlert');
+    if(alertBox) {
+        alertBox.classList.remove('active');
+    }
 }
-
 /* =========================================
    11. Smart Greeting & Dual Clock
    ========================================= */
@@ -596,27 +599,6 @@ if(contactForm){
     });
 }
 
-/* =========================================
-   14. Reviews Logic (Real Firebase) 🔥
-   ========================================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyANz8dBPKkSD6mqTuVk77WLRqsVQ1hVlog",
-  authDomain: "kyrillos-protifolio.firebaseapp.com",
-  projectId: "kyrillos-protifolio",
-  storageBucket: "kyrillos-protifolio.firebasestorage.app",
-  messagingSenderId: "154071914816",
-  appId: "1:154071914816:web:b246ca0b0aada5db3502a5",
-  measurementId: "G-64M0V7QRPO"
-};
-
-// Initialize Firebase
-try {
-    firebase.initializeApp(firebaseConfig);
-    var db = firebase.firestore();
-    console.log("Firebase Connected");
-} catch (e) {
-    console.error("Firebase Error:", e);
-}
 
 // 1. Modal Logic
 const reviewModal = document.getElementById('reviewModal');
@@ -1042,93 +1024,6 @@ function closeBill() {
     document.body.style.overflow = 'auto'; // Unlock scroll
 }
 /* =========================================
-   💎 ULTIMATE WHATSAPP INVOICE (WITH ICONS)
-   ========================================= */
-function confirmOrderOnWhatsApp() {
-    
-    // --- 1. Helpher: Convert FontAwesome Class to Emoji ---
-    // This looks at the icon inside your selected card and picks an emoji
-    function getEmoji(element) {
-        if(!element) return '⚡';
-        const icon = element.querySelector('i');
-        if(!icon) return '⚡';
-        const cls = icon.className;
-
-        if(cls.includes('globe') || cls.includes('laptop')) return '🌐'; // Website
-        if(cls.includes('mobile')) return '📱'; // App
-        if(cls.includes('shopping')) return '🛒'; // E-commerce
-        if(cls.includes('paint')) return '🎨'; // Design
-        if(cls.includes('search') || cls.includes('google')) return '🔍'; // SEO
-        if(cls.includes('lock') || cls.includes('shield')) return '🛡️'; // Security
-        if(cls.includes('bolt') || cls.includes('rocket')) return '🚀'; // Speed
-        if(cls.includes('server') || cls.includes('database')) return '💾'; // Hosting
-        if(cls.includes('language') || cls.includes('comment')) return '💬'; // Multi-lang
-        
-        return '⚡'; // Default fallback
-    }
-
-    // --- 2. Collect Data ---
-    const activeProject = document.querySelector('.type-item.active');
-    const totalText = document.getElementById('billTotal').innerText;
-    const activeAddons = document.querySelectorAll('.pop-bubble.active');
-    const date = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
-    const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-
-    // --- 3. Build The "Cyber Receipt" ---
-    
-let message = `*مرحبا كيرلس👋 \n`;
-    // HEADER
-    message += `╔══════════════════╗\n`;
-    message += `🧾 *    تـاريـخ الطـلـب* \n`;
-    message += `   📅 ${date} • ${time}   \n`;
-    message += `╚══════════════════╝\n\n`;
-
-
-    message += `أريد طلب جديد، إليك التفاصيل:\n\n`;
-    // MAIN PROJECT
-    if (activeProject) {
-        const projName = activeProject.querySelector('h4').innerText;
-        const projPrice = activeProject.querySelector('.price-badge').innerText.replace(/[^0-9]/g, '');
-        const emoji = getEmoji(activeProject);
-        message += `━━━━━━━━━━━━━━━━━━\n`;
-        message += `🌐 *المشروع :*\n`;
-        message += `━━━━━━━━━━━━━━━━━━\n`;
-        message += `${emoji} *${projName}*\n`;
-        message += `   └─ 🏷️ ${projPrice} EGP\n\n`;
-    }
-
-    // ADDONS
-    if (activeAddons.length > 0) {
-        message += `━━━━━━━━━━━━━━━━━━\n`;
-        message += `➕ *الإضافات والتحسينات:*\n`;
-        message += `━━━━━━━━━━━━━━━━━━\n`;
-        
-        activeAddons.forEach(addon => {
-            const name = addon.querySelector('span').innerText.trim();
-            const price = addon.querySelector('small').innerText.replace(/[^0-9]/g, '');
-            const emoji = getEmoji(addon);
-
-            message += `${emoji} ${name}\n`;
-            message += `   └─ 🏷️ +${price} EGP\n`;
-        });
-        message += `\n`;
-    }
-
-    // TOTAL
-    message += `╭──────────────────╮\n`;
-    message += `│  💰 *الإجمالي:* \n`;
-    message += `│  👈 *${totalText}* \n`;
-    message += `╰──────────────────╯\n\n`;
-
-    // FOOTER
-    message += `🚀 *بانتظار تأكيدك للبدء فوراً!*`;
-
-    // --- 4. Send ---
-    const url = `https://wa.me/201275944732?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
-
-/* =========================================
    🔥 SYSTEM: DYNAMIC PROJECTS LOADER (WITH LOAD MORE) 🔥
    ========================================= */
 function loadDynamicProjects() {
@@ -1328,3 +1223,122 @@ function initDynamicCalculator() {
 
 // Start listener
 window.addEventListener('load', initDynamicCalculator);
+
+/* =========================================
+   🕵️‍♂️ VISITOR TRACKING & STATUS CHECK
+   ========================================= */
+
+// 1. Increment Visitor Count (Run once per session)
+function trackVisit() {
+    // Check if we already counted this user in this session
+    if (!sessionStorage.getItem('visited')) {
+        const increment = firebase.firestore.FieldValue.increment(1);
+        db.collection("stats").doc("visits").set({
+            count: increment
+        }, { merge: true });
+        
+        sessionStorage.setItem('visited', 'true');
+    }
+}
+
+// 2. Check Availability Status
+function checkAvailability() {
+    db.collection("settings").doc("status").onSnapshot((doc) => {
+        if (doc.exists) {
+            const state = doc.data().state;
+            const statusLabels = document.querySelectorAll('.status-active'); // The small text in "About"
+            const statusDot = document.querySelector('.status-badge'); // If you add a dot in hero
+            
+            statusLabels.forEach(el => {
+                if (state === 'available') {
+                    el.innerText = "متاح للعمل";
+                    el.style.color = "#00ff88";
+                } else {
+                    el.innerText = "مشغول حالياً";
+                    el.style.color = "#ff2e63";
+                }
+            });
+        }
+    });
+}
+
+// Run on load
+window.addEventListener('load', () => {
+    if (typeof db !== 'undefined') {
+        trackVisit();
+        checkAvailability();
+    }
+});
+/* =========================================
+   🔥 SMART ORDER SYSTEM (FINAL FIXED VERSION)
+   ========================================= */
+function confirmOrderOnWhatsApp() {
+    // 1. Get Values
+    const name = document.getElementById('customerName').value;
+    const phone = document.getElementById('customerPhone').value;
+    
+    // Validation
+    if(!name || !phone) {
+        showCustomAlert("من فضلك ادخل الاسم ورقم الهاتف!", "بيانات ناقصة");
+        return;
+    }
+
+    const confirmBtn = document.querySelector('.bill-footer .btn');
+    const oldText = confirmBtn.innerHTML;
+    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+    confirmBtn.disabled = true;
+
+    // 2. Collect Data
+    const totalText = document.getElementById('billTotal').innerText;
+    const items = [];
+    document.querySelectorAll('#billItems .bill-row').forEach(row => {
+        if(!row.innerText.includes('📅')) {
+            items.push(row.innerText.replace(/\n/g, ' ').trim());
+        }
+    });
+
+    // 3. Save to Firebase
+    db.collection("orders").add({
+        customerName: name,
+        phone: phone,
+        client: name + " (" + phone + ")",
+        items: items,
+        total: totalText,
+        date: new Date(),
+        status: 'pending'
+    }).then(() => {
+        
+        // Increment Counter
+        const increment = firebase.firestore.FieldValue.increment(1);
+        db.collection("stats").doc("orders_received").set({ count: increment }, { merge: true });
+
+        // 4. Generate Link
+        const waMessage = `*طلب جديد من:* ${name}\n` +
+                          `*رقم الهاتف:* ${phone}\n` +
+                          `*الإجمالي:* ${totalText}\n` +
+                          `------------------\n` +
+                          items.join('\n');
+        
+        const url = `https://wa.me/201275944732?text=${encodeURIComponent(waMessage)}`;
+
+        // Reset UI
+        confirmBtn.innerHTML = oldText;
+        confirmBtn.disabled = false;
+        
+        closeBill(); // Close bill modal
+
+        // ✅ SHOW ALERT WITH BUTTON
+        showCustomAlert(
+            "تم حفظ الطلب بنجاح! اضغط بالأسفل لإرسال التفاصيل.", 
+            "نجاح العملية ✅", 
+            "إرسال واتساب", 
+            url
+        );
+
+    }).catch((error) => {
+        console.error("Order Error:", error);
+        showCustomAlert("حدث خطأ في الاتصال", "خطأ");
+        confirmBtn.innerHTML = oldText;
+        confirmBtn.disabled = false;
+    });
+}

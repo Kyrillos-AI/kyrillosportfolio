@@ -70,21 +70,29 @@
         <aside class="sidebar glass-panel">
         <div class="brand">ADMIN PANEL</div>
         <ul>
-            <li class="active" onclick="showTab('manage-projects', this)">
+            <li class="active" onclick="showTab('stats-overview', this)">
+                <i class="fas fa-chart-pie"></i> الإحصائيات
+            </li>
+            <li onclick="showTab('manage-orders', this)">
+                <i class="fas fa-shopping-basket"></i> إدارة الطلبات
+            </li>
+            <li onclick="showTab('pricing-manager', this)">
+                <i class="fas fa-tags"></i> إدارة الخدمات 
+            </li>
+            <li onclick="showTab('manage-projects', this)">
                 <i class="fas fa-list"></i> إدارة المشاريع
             </li>
             <li  onclick="showTab('add-project', this)">
                 <i class="fas fa-plus-circle"></i> إضافة مشروع
             </li>
-            <li onclick="showTab('profile-pic', this)">
-                <i class="fas fa-user-circle"></i> صورة البروفايل
+            <li onclick="showTab('manage-reviews', this)">
+                <i class="fas fa-star"></i> إدارة التقييمات
             </li>
             <li onclick="showTab('social-links', this)">
                 <i class="fas fa-share-alt"></i> روابط التواصل
             </li>
-            
-            <li onclick="showTab('pricing-manager', this)">
-                <i class="fas fa-tags"></i> إدارة الخدمات 
+            <li onclick="showTab('profile-pic', this)">
+                <i class="fas fa-user-circle"></i> صورة البروفايل
             </li>
             <li class="nav-item" onclick="showTab('security', this)">
                 <i class="fas fa-user-shield"></i>
@@ -96,241 +104,260 @@
         </ul>
     </aside>
     <main class="main-content">
-     <header class="admin-header">
-                <h2><i class="fas fa-microchip"></i> مركز التحكم</h2>
-                <div class="status-badge">SYSTEM: ONLINE</div>
-                <button class="mobile-logout-btn" onclick="window.location.href='index.html'">
-        <i class="fas fa-sign-out-alt"></i> خروج
-    </button>
-            </header>
-        <div id="add-project" class="tab-section" style="display:none;">
-            <div class="admin-card glass-panel">
-         <h3 class="card-title"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</h3>
     
-         <div class="input-group">
-         <label>اسم المشروع</label>
-         <input type="text" id="pTitle" placeholder="أدخل اسم المشروع...">
-         <div class="scan-line"></div>
-         </div>
-
-    <div class="input-group">
-        <label>وصف المشروع</label>
-        <textarea id="pDesc" rows="3" placeholder="وصف مختصر..."></textarea>
-        <div class="scan-line"></div>
-    </div>
-
-    <div class="input-group">
-        <label>صورة المشروع</label>
-        <div class="drop-zone" id="dropZone">
-            <input type="file" id="imageFile" accept="image/*" hidden>
-            <div class="drop-content">
-                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                <p>اسحب الصورة وأفلتها هنا</p>
-                <span class="small-text">أو اضغط للاختيار من الجهاز</span>
-            </div>
-            <img id="previewImg" class="img-preview hidden">
+    <header class="admin-header">
+        <div>
+            <h2><i class="fas fa-microchip"></i> مركز التحكم</h2>
+            <div class="status-badge">SYSTEM: ONLINE</div>
         </div>
-    </div>
-
-    <div class="row-group">
-        <div class="input-group">
-            <label>رابط المعاينة</label>
-            <input type="text" id="pLink" placeholder="https://...">
-        </div>
-
-        <div class="input-group">
-            <label>التصنيف</label>
-            <div class="custom-select">
-                <select id="pCat">
-                    <option value="code"> برمجة (Code)</option>
-                    <option value="design"> تصميم (Design)</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <button class="btn-cyber" id="addBtn">
-        <span class="btn-text">نشر المشروع</span>
-        <span class="btn-glitch"></span>
-        <i class="fas fa-rocket"></i>
-    </button>
-</div>
-            </div>
-
-        <div id="manage-projects" class="tab-section active" style="display:block;">
-            <div class="admin-card glass-panel">
-                <h3>الأرشيف</h3>
-                <div id="projectsList" class="projects-grid"></div>
-            </div>
-            </div>
-
-        <div id="social-links" class="tab-section" style="display:none;">
-            <div class="admin-card glass-panel">
-    <h3 class="card-title"><i class="fas fa-share-alt"></i> روابط السوشيال</h3>
-    <p style="color:#888; font-size:0.9rem; margin-bottom:15px;">اترك الحقل فارغاً إذا كنت لا تريد تغييره.</p>
-    
-    <div class="row-group">
-        <div class="input-group">
-            <label><i class="fab fa-facebook-f"></i> فيسبوك</label>
-            <input type="text" id="fbLink" placeholder="رابط فيسبوك">
-        </div>
-
-        <div class="input-group">
-            <label><i class="fab fa-instagram"></i> انستجرام</label>
-            <input type="text" id="instaLink" placeholder="رابط انستجرام">
-        </div>
-
-        <div class="input-group">
-            <label><i class="fab fa-whatsapp"></i> واتساب</label>
-            <input type="text" id="waLink" placeholder="https://wa.me/...">
-        </div>
-
- <div class="input-group">
-           <label><i class="fab fa-tiktok"></i> تيك توك</label>
-           <input type="text" id="tiktokLink" placeholder="رابط تيك توك">
-       </div>
-    </div>
-
-    <div class="row-group">
-        <div class="input-group">
-            <label><i class="fab fa-github"></i> جيت هب</label>
-            <input type="text" id="gitLink" placeholder="رابط GitHub">
-        </div>
-    </div>
-    <button class="btn-cyber" id="saveSocialsBtn">
-        <span class="btn-text">حفظ الروابط</span>
-        <i class="fas fa-save"></i>
-    </button>
-             </div>
-            </div>
-            <section id="profile-pic" class="tab-section" style="display:none;">
-    <div class="admin-card glass-panel">
-        <h3 class="card-title"><i class="fas fa-image"></i>الصوره الشخصيه</h3>
-        
-        <div class="drop-zone compact-drop" id="profileDropZone">
-            <input type="file" id="profileFile" accept="image/*" hidden>
-            <div class="drop-content">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>اضغط لرفع صورة جديدة</span>
-            </div>
-            <img id="profilePreview" class="img-preview hidden">
-        </div>
-
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-cyber" id="saveProfileBtn">
-                <span class="btn-text">حفظ الصورة</span> <i class="fas fa-save"></i>
-            </button>
-            <button class="btn-cyber" id="deleteProfileBtn" style="background: #ff2e63; color: white; border-color: #ff2e63;">
-                <span class="btn-text">حذف واسترجاع الأصلية</span> <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </div>
-</section>
-
-<section id="pricing-manager" class="tab-section" style="display:none;">
-    <div class="admin-card glass-panel">
-        <h3 class="card-title"><i class="fas fa-calculator"></i> إدارة الحاسبة</h3>
-
-        <h4 style="color:var(--gold); margin:20px 0 10px; border-bottom:1px solid #333; padding-bottom:5px;">
-            1. الخدمات الأساسية 
-        </h4>
-        
-        <div id="adminServicesList" style="margin-bottom: 15px;"></div>
-        
-        <div class="add-box" style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px;">
-            <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">إضافة خدمة جديدة:</p>
-            <div class="split-group" style="grid-template-columns: 1fr 1fr 1fr auto; gap:10px;">
-                <input type="text" id="newServName" placeholder="الاسم (مثلاً: موقع شركة)">
-                <input type="number" id="newServPrice" placeholder="السعر">
-                
-                <select id="newServIcon" style="background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;">
-                    <option value="fa-globe">🌐 Globe</option>
-                    <option value="fa-code">💻 Code</option>
-                    <option value="fa-shopping-cart">🛒 Cart</option>
-                    <option value="fa-mobile-alt">📱 Mobile</option>
-                    <option value="fa-paint-brush">🎨 Design</option>
-                    <option value="fa-bullhorn">📢 Marketing</option>
-                    <option value="fa-camera">📸 Camera</option>
-                    <option value="fa-video">🎥 Video</option>
-                    <option value="fas fa-wrench">🛠️Wrench</option>
-                    <option value="fa-robot">🤖 AI</option>
-                    <option value="fa-server">☁️ Server</option>
-                    <option value="fa-chart-line">📈 SEO</option>
-                    <option value="fa-file-alt">📄 File</option>
-                    <option value="fa-id-card">📇 ID Card</option>
-                    <option value="fa-blog">📝 Blog</option>
-                    <option value="fas fa-gem">💎Gem</option>
-                    <option value="fas fa-city">🏙️City</option>
-                    <option value="fas fa-rocket">🚀Rocket</option>
-                    <option value="fas fa-building">🏢Building</option>
-                </select>
-
-                <button class="btn-cyber small-btn" onclick="addNewService()">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-        </div>
-
-        <h4 style="color:var(--gold); margin:30px 0 10px; border-bottom:1px solid #333; padding-bottom:5px;">
-            2. الإضافات 
-        </h4>
-        
-        <div id="adminAddonsList" style="margin-bottom: 15px;"></div>
-        
-        <div class="add-box" style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px;">
-            <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">إضافة ميزة جديدة:</p>
-            <div class="split-group" style="grid-template-columns: 1fr 1fr 1fr auto; gap:10px;">
-                <input type="text" id="newAddonName" placeholder="الاسم (مثلاً: لغة ثانية)">
-                <input type="number" id="newAddonPrice" placeholder="السعر">
-                
-                <select id="newAddonIcon" style="background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;">
-                    <option value="fa-plus">➕ Plus</option>
-                    <option value="fa-language">🌐 Lang</option>
-                    <option value="fa-moon">🌙 Dark</option>
-                    <option value="fa-bolt">⚡ Speed</option>
-                    <option value="fa-search">🔍 SEO</option>
-                    <option value="fa-whatsapp">💬 Chat</option>
-                    <option value="fa-lock">🔒 SSL</option>
-                    <option value="fa-star">⭐ Star</option>
-                    <option value="fa-clock">⏳ Urgent</option>
-                    <option value="fa-palette">🎨 Logo</option>
-                </select>
-
-                <button class="btn-cyber small-btn" onclick="addNewAddon()">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-        </div>
-
-        <div style="margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; text-align: center;">
-            <button class="btn-cyber" id="saveDynamicPricesBtn" onclick="saveAllCalculatorData()">
-                <span class="btn-text">حفظ وتحديث الموقع</span> <i class="fas fa-save"></i>
-            </button>
-        </div>
-    </div>
-</section>
-        <div id="security" class="tab-section" style="display:none;">  
-       <section id="tab-security" class="content-tab">
-    <div class="admin-card glass-panel">
-        <h3 class="card-title"><i class="fas fa-key"></i> تغيير كلمة المرور</h3>
-        <p style="color:#888; margin-bottom: 20px;">قم بتحديث كود كلمه سر صفحه الاداره</p>
-        
-        <div class="input-group">
-            <label>كلمة المرور الجديدة</label>
-            <input type="password" id="newPass" placeholder="أدخل كلمة السر الجديدة...">
-        </div>
-
-        <div class="input-group">
-            <label>تأكيد كلمة المرور</label>
-            <input type="password" id="confirmPass" placeholder="أعد كتابة كلمة السر...">
-        </div>
-
-        <button class="btn-cyber" id="savePassBtn" onclick="changePassword()">
-            <span class="btn-text">تحديث كلمة المرور</span> <i class="fas fa-lock"></i>
+        <button class="mobile-logout-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-sign-out-alt"></i> خروج
         </button>
-    </div></div>  
-</section>
-    </main>
+    </header>
+
+    <div id="stats-overview" class="tab-section active" style="display:block;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-chart-line"></i> الإحصائيات العامة</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                    <i class="fas fa-eye" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
+                    <h3 style="margin: 0; color: #fff; font-size: 1rem;">زيارات الموقع</h3>
+                    <p id="totalViews" style="font-size: 2.5rem; font-weight: 900; color: #fff; margin: 10px 0;">0</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                    <i class="fas fa-power-off" style="font-size: 2rem; color: #00ff88; margin-bottom: 10px;" id="statusIcon"></i>
+                    <h3 style="margin: 0; color: #fff; font-size: 1rem;">حالة العمل</h3>
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+                        <button class="btn-cyber small-btn" onclick="updateStatus('available')" style="border-color: #00ff88; color: #00ff88; padding: 5px 15px;">متاح</button>
+                        <button class="btn-cyber small-btn" onclick="updateStatus('busy')" style="border-color: #ff2e63; color: #ff2e63; padding: 5px 15px;">مشغول</button>
+                    </div>
+                    <p id="currentStatusText" style="margin-top: 10px; color: #888; font-size: 0.9rem;">...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <div id="manage-orders" class="tab-section" style="display:none;">
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+        <div class="glass-panel" style="text-align: center; border-color: #ffd700;">
+            <h3 style="color:#ffd700; margin:0;">الطلبات المستلمة</h3>
+            <p id="statReceived" style="font-size: 2rem; font-weight: bold; margin: 10px 0;">0</p>
+        </div>
+        <div class="glass-panel" style="text-align: center; border-color: #00ff88; cursor: pointer; transition: 0.3s;" onclick="filterOrders('confirmed')">
+            <h3 style="color:#00ff88; margin:0;">تم التأكيد (أرباح)</h3>
+            <p id="statConfirmed" style="font-size: 2rem; font-weight: bold; margin: 10px 0;">0</p>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+        <button onclick="filterOrders('all')" class="btn-cyber small-btn" style="border-color:#fff; color:#fff; min-width: 150px;">
+            <i class="fas fa-list"></i> عرض الكل
+        </button>
+        <button id="clearDataBtn" onclick="clearAllData()" class="btn-cyber small-btn" style="border-color: #ff2e63; color: #ff2e63; min-width: 150px;">
+            <i class="fas fa-trash-alt"></i> حذف كل البيانات
+        </button>
+    </div>
+
+    <div class="admin-card glass-panel">
+        <h3 class="card-title"><i class="fas fa-list-ul"></i> سجل الطلبات</h3>
+        <div id="ordersList" style="display: flex; flex-direction: column; gap: 15px;">
+            </div>
+    </div>
+</div>
+
+    <div id="manage-projects" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-layer-group"></i> أرشيف المشاريع</h3>
+            <div id="projectsList" class="projects-grid"></div>
+        </div>
+    </div>
+
+    <div id="add-project" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</h3>
+    
+            <div class="input-group">
+                <label>اسم المشروع</label>
+                <input type="text" id="pTitle" placeholder="أدخل اسم المشروع...">
+                <div class="scan-line"></div>
+            </div>
+
+            <div class="input-group">
+                <label>وصف المشروع</label>
+                <textarea id="pDesc" rows="3" placeholder="وصف مختصر..."></textarea>
+                <div class="scan-line"></div>
+            </div>
+
+            <div class="input-group">
+                <label>صورة المشروع</label>
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="imageFile" accept="image/*" hidden>
+                    <div class="drop-content">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p>اسحب الصورة وأفلتها هنا</p>
+                    </div>
+                    <img id="previewImg" class="img-preview hidden">
+                </div>
+            </div>
+
+            <div class="row-group">
+                <div class="input-group">
+                    <label>رابط المعاينة</label>
+                    <input type="text" id="pLink" placeholder="https://...">
+                </div>
+                <div class="input-group">
+                    <label>التصنيف</label>
+                    <div class="custom-select">
+                        <select id="pCat">
+                            <option value="code"> برمجة (Code)</option>
+                            <option value="design"> تصميم (Design)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-cyber" id="addBtn">
+                <span class="btn-text">نشر المشروع</span> <i class="fas fa-rocket"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="profile-pic" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-image"></i> الصورة الشخصية</h3>
+            
+            <div class="drop-zone compact-drop" id="profileDropZone">
+                <input type="file" id="profileFile" accept="image/*" hidden>
+                <div class="drop-content">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>اضغط لرفع صورة جديدة</span>
+                </div>
+                <img id="profilePreview" class="img-preview hidden">
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-cyber" id="saveProfileBtn">
+                    <span class="btn-text">حفظ الصورة</span> <i class="fas fa-save"></i>
+                </button>
+                <button class="btn-cyber" id="deleteProfileBtn" style="background: #ff2e63; color: white; border-color: #ff2e63;">
+                    <span class="btn-text">حذف واسترجاع الأصلية</span> <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="social-links" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-share-alt"></i> روابط السوشيال</h3>
+            <p style="color:#888; font-size:0.9rem; margin-bottom:15px;">اترك الحقل فارغاً إذا كنت لا تريد تغييره.</p>
+            
+            <div class="row-group">
+                <div class="input-group">
+                    <label><i class="fab fa-facebook-f"></i> فيسبوك</label>
+                    <input type="text" id="fbLink" placeholder="رابط فيسبوك">
+                </div>
+                <div class="input-group">
+                    <label><i class="fab fa-instagram"></i> انستجرام</label>
+                    <input type="text" id="instaLink" placeholder="رابط انستجرام">
+                </div>
+                <div class="input-group">
+                    <label><i class="fab fa-whatsapp"></i> واتساب</label>
+                    <input type="text" id="waLink" placeholder="https://wa.me/...">
+                </div>
+                <div class="input-group">
+                    <label><i class="fab fa-tiktok"></i> تيك توك</label>
+                    <input type="text" id="tiktokLink" placeholder="رابط تيك توك">
+                </div>
+            </div>
+            <div class="input-group">
+                <label><i class="fab fa-github"></i> جيت هب</label>
+                <input type="text" id="gitLink" placeholder="رابط GitHub">
+            </div>
+            <button class="btn-cyber" id="saveSocialsBtn">
+                <span class="btn-text">حفظ الروابط</span> <i class="fas fa-save"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="pricing-manager" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-calculator"></i> إدارة الحاسبة</h3>
+
+            <h4 style="color:var(--gold); margin:20px 0 10px; border-bottom:1px solid #333; padding-bottom:5px;">1. الخدمات الأساسية</h4>
+            <div id="adminServicesList" style="margin-bottom: 15px;"></div>
+            
+            <div class="add-box" style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px;">
+                <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">إضافة خدمة جديدة:</p>
+                <div class="split-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap:10px;">
+                    <input type="text" id="newServName" placeholder="الاسم">
+                    <input type="number" id="newServPrice" placeholder="السعر">
+                    <select id="newServIcon" style="background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;">
+                        <option value="fa-globe">🌐 Globe</option>
+                        <option value="fa-code">💻 Code</option>
+                        <option value="fa-shopping-cart">🛒 Cart</option>
+                        <option value="fa-mobile-alt">📱 Mobile</option>
+                        <option value="fa-paint-brush">🎨 Design</option>
+                    </select>
+                    <button class="btn-cyber small-btn" onclick="addNewService()"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <h4 style="color:var(--gold); margin:30px 0 10px; border-bottom:1px solid #333; padding-bottom:5px;">2. الإضافات</h4>
+            <div id="adminAddonsList" style="margin-bottom: 15px;"></div>
+            
+            <div class="add-box" style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px;">
+                <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">إضافة ميزة جديدة:</p>
+                <div class="split-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap:10px;">
+                    <input type="text" id="newAddonName" placeholder="الاسم">
+                    <input type="number" id="newAddonPrice" placeholder="السعر">
+                    <select id="newAddonIcon" style="background:#000; color:#fff; border:1px solid #333; padding:10px; border-radius:5px;">
+                        <option value="fa-plus">➕ Plus</option>
+                        <option value="fa-language">🌐 Lang</option>
+                        <option value="fa-bolt">⚡ Speed</option>
+                    </select>
+                    <button class="btn-cyber small-btn" onclick="addNewAddon()"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; border-top: 1px solid #333; padding-top: 20px; text-align: center;">
+                <button class="btn-cyber" id="saveDynamicPricesBtn" onclick="saveAllCalculatorData()">
+                    <span class="btn-text">حفظ وتحديث الموقع</span> <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="manage-reviews" class="tab-section" style="display:none;">
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-star"></i> التحكم في آراء العملاء</h3>
+            <div id="adminReviewsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="security" class="tab-section" style="display:none;">  
+        <div class="admin-card glass-panel">
+            <h3 class="card-title"><i class="fas fa-key"></i> تغيير كلمة المرور</h3>
+            <p style="color:#888; margin-bottom: 20px;">قم بتحديث كود كلمة سر صفحة الإدارة</p>
+            
+            <div class="input-group">
+                <label>كلمة المرور الجديدة</label>
+                <input type="password" id="newPass" placeholder="أدخل كلمة السر الجديدة...">
+            </div>
+            <div class="input-group">
+                <label>تأكيد كلمة المرور</label>
+                <input type="password" id="confirmPass" placeholder="أعد كتابة كلمة السر...">
+            </div>
+
+            <button class="btn-cyber" id="savePassBtn" onclick="changePassword()">
+                <span class="btn-text">تحديث كلمة المرور</span> <i class="fas fa-lock"></i>
+            </button>
+        </div>
+    </div>
+
+</main>
         
         </div>
     </div>
