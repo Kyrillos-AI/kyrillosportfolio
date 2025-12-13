@@ -29,7 +29,7 @@ html.lenis {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif;}
 body { background-color: var(--black-bg); color: #fff; direction: rtl; text-align: right; overflow-x: hidden; }
 a { text-decoration: none; color: inherit; }
 ::selection { background: var(--gold-main); color: #000; }
@@ -1894,18 +1894,22 @@ html[lang="en"] p {
 
 /* 3. كروت الإضافات (Bubbles) */
 .pop-bubble {
+    /* ... keep your colors/border ... */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid #333;
-    border-radius: 50px; /* شكل بيضاوي */
-    padding: 10px 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s;
+    border-radius: 15px; /* Use rounded rect instead of full circle for better text fit */
+    padding: 12px 15px;
+    
+    /* FIX LAYOUT */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.85rem;
-    color: #bbb;
+    gap: 10px; /* Space between text and price */
+    
+    /* Allow text to wrap if long */
+    white-space: normal; 
+    height: auto; 
+    min-height: 50px;
 }
 
 .pop-bubble:hover {
@@ -1920,8 +1924,19 @@ html[lang="en"] p {
     font-weight: bold;
     box-shadow: inset 0 0 10px var(--gold-main);
 }
+/* Ensure the text inside takes space */
+.pop-bubble span {
+    flex: 1; /* Pushes price to the right */
+    text-align: right;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
 
-.pop-bubble small { color: #666; font-size: 0.7rem; margin-right: 5px; }
+/* Fix the price width */
+.pop-bubble small {
+    flex-shrink: 0; /* Prevents price from squashing */
+    white-space: nowrap;
+}
 .pop-bubble.active small { color: var(--gold-main); }
 
 /* 4. Divider Glow */
@@ -2026,11 +2041,13 @@ html[lang="en"] p {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+    align-items: center;
     font-family: 'Courier New', monospace; /* Invoice Font */
     color: #ccc;
     font-size: 1rem;
     border-bottom: 1px dashed #333;
     padding-bottom: 5px;
+    word-break: break-word; /* Wrap long words */
 }
 
 .header-row { font-weight: bold; color: var(--gold-main); border-bottom: 2px solid #333; }
@@ -2716,7 +2733,8 @@ html[lang="en"] p {
         width: 100%;
         max-width: 100%;
         margin: 0;
-        overflow: hidden; /* Cuts off anything sticking out */
+        margin: 40px 0; /* Add margin so icons don't hit other sections */
+    overflow: visible !important; /* Allow icons to float outside */
     }
     
     /* Ensure Particles don't block clicks */
