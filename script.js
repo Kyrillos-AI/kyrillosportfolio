@@ -2216,17 +2216,14 @@ window.addEventListener("load", function () {
 });
 function triggerVibration() {
   if (navigator.vibrate) {
-    // نمط نبضي قوي جداً لجهاز انفنكس (200ms اهتزاز)
-    navigator.vibrate(200);
-    console.log("Infinix Vibrate Triggered");
+    // اهتزاز طويل وقوي (250ms) لتشعر به بوضوح في Infinix
+    navigator.vibrate(250);
   }
 }
 
-// التأكد من ربط كل الأزرار
-document
-  .querySelectorAll(".btn-cyber, .nav-icon, .login-icon, .btn")
-  .forEach((btn) => {
-    btn.addEventListener("click", () => {
-      triggerVibration();
-    });
-  });
+// ربط مباشر لكل عنصر تفاعلي
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".btn-cyber, .nav-icon, .login-icon, .btn")) {
+    triggerVibration();
+  }
+});

@@ -1227,31 +1227,48 @@ window.showOrderDetails = function (orderId) {
 window.closeOrderDetails = function () {
   document.getElementById("orderDetailsModal").classList.remove("active");
 };
-// ربط الضغط على الأيقونة بالبصمة
-document.addEventListener("DOMContentLoaded", () => {
-  const fingerIcon = document.querySelector(".login-icon");
-  if (fingerIcon) {
-    fingerIcon.style.cursor = "pointer";
-    fingerIcon.addEventListener("click", tryBiometric);
-  }
-});
-
 async function tryBiometric() {
   if (window.PublicKeyCredential) {
     try {
-      // طلب التحقق من الهاتف
+      // 1. التحقق من وجود بصمة مسجلة في الهاتف
       const available =
         await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+
       if (available) {
-        // محاكاة نجاح الدخول (سيظهر مستشعر الهاتف الحقيقي)
-        document.getElementById("adminPass").value = "123456"; // الباسورد الافتراضي
-        triggerVibration(); // اهتزاز عند النجاح
-        checkLogin(); // تسجيل الدخول
+        // 2. إظهار "نافذة البصمة" الحقيقية الخاصة بنظام أندرويد
+        // سنرسل طلباً وهمياً للهاتف ليفتح الحساس
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
+        const options = {
+          publicKey: {
+            challenge: challenge,
+            rp: { name: "Kyrillos Admin" },
+            user: {
+              id: new Uint8Array(16),
+              name: "admin",
+              displayName: "Kyrillos",
+            },
+            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+            authenticatorSelection: { userVerification: "required" },
+            timeout: 60000,
+          },
+        };
+
+        // هذا السطر هو الذي سيظهر نافذة "المس مستشعر البصمة" على شاشتك
+        const credential = await navigator.credentials.create(options);
+
+        if (credential) {
+          // إذا لمست البصمة بنجاح
+          document.getElementById("adminPass").value = "123456"; // الباسورد الافتراضي
+          triggerVibration();
+          checkLogin(); // تنفيذ الدخول
+        }
       } else {
-        showAlert("مستشعر البصمة غير جاهز أو غير مدعوم في المتصفح", "تنبيه");
+        showAlert("لم يتم العثور على بصمة مسجلة في هذا الهاتف.", "تنبيه");
       }
     } catch (e) {
-      console.error("Biometric Error");
+      console.log("تم إلغاء العملية أو حدث خطأ");
     }
   }
 }
