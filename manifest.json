@@ -1,13 +1,13 @@
 {
-  "id": "kyrillos.portfolio.app",
+  "id": "com.kyrillos.portfolio",
   "short_name": "Kyrillos",
   "name": "Kyrillos | Portfolio",
-  "description": "الموقع الرسمي للمطور كيرلس - بورتفوليو تفاعلي",
   "icons": [
     {
       "src": "logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
@@ -20,21 +20,5 @@
   "display": "standalone",
   "theme_color": "#050505",
   "background_color": "#050505",
-  "orientation": "portrait",
-  "shortcuts": [
-    {
-      "name": "صمم مشروعك",
-      "short_name": "احجز",
-      "description": "احجز وصمم مشروع موقعك دلوقتي",
-      "url": "index.html#ultimate-wizard",
-      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "معرض الأعمال",
-      "short_name": "أعمالي",
-      "description": "مشاهدة آخر المشاريع",
-      "url": "index.html#projects",
-      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
-    }
-  ]
+  "orientation": "portrait"
 }
