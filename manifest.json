@@ -18,5 +18,21 @@
   "display": "standalone",
   "theme_color": "#050505",
   "background_color": "#050505",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "shortcuts": [
+    {
+      "name": "تواصل معي",
+      "short_name": "اتصال",
+      "description": "فتح قسم التواصل مباشرة",
+      "url": "index.html#contact",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "معرض الأعمال",
+      "short_name": "أعمالي",
+      "description": "مشاهدة آخر المشاريع",
+      "url": "index.html#projects",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    }
+  ]
 }

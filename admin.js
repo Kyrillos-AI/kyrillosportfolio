@@ -1227,3 +1227,27 @@ window.showOrderDetails = function (orderId) {
 window.closeOrderDetails = function () {
   document.getElementById("orderDetailsModal").classList.remove("active");
 };
+async function checkBiometricSupport() {
+  if (window.PublicKeyCredential) {
+    const available =
+      await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (available) {
+      // الجهاز يدعم البصمة أو التعرف على الوجه
+      showAlert(
+        "جهازك يدعم الدخول الحيوي. يمكنك تفعيل البصمة لاحقاً.",
+        "نظام الأمان"
+      );
+    } else {
+      showAlert(
+        "جهازك لا يدعم التحقق بالبصمة حالياً.",
+        "تنبيه",
+        "fa-exclamation-triangle"
+      );
+    }
+  }
+}
+
+// ربط الوظيفة بأيقونة البصمة في صفحة اللوجن
+document
+  .querySelector(".login-icon")
+  ?.addEventListener("click", checkBiometricSupport);
