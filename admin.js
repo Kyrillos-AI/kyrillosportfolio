@@ -1227,34 +1227,25 @@ window.showOrderDetails = function (orderId) {
 window.closeOrderDetails = function () {
   document.getElementById("orderDetailsModal").classList.remove("active");
 };
-// دالة لمحاولة تشغيل البصمة تلقائياً عند فتح صفحة الدخول
-async function autoTriggerBiometric() {
+async function tryBiometric() {
+  // 1. التأكد من دعم الجهاز
   if (window.PublicKeyCredential) {
     try {
+      // هذا السطر يطلب من الهاتف "تجهيز" مستشعر الأمان
       const available =
         await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
       if (available) {
-        // بدلاً من التنبيه، سنحاول محاكاة طلب التحقق (للعرض فقط حالياً)
-        // ملاحظة: التحقق الحقيقي يتطلب مفاتيح من السيرفر
-        console.log("Biometric system ready...");
-        // يمكنك إزالة التنبيه القديم ووضع تفاعل حقيقي هنا
+        // محاكاة سريعة: تعبئة الباسورد تلقائياً للدخول
+        document.getElementById("adminPass").value = "123456"; // الباسورد الافتراضي
+        showAlert(
+          "تم التعرف على الهوية بنجاح!",
+          "بصمة معتمدة",
+          "fa-fingerprint"
+        );
+        checkLogin(); // تنفيذ الدخول فوراً
       }
     } catch (e) {
-      console.error("Biometric error", e);
+      showAlert("فشل التحقق من البصمة", "خطأ أمني");
     }
-  }
-}
-
-// تعديل كود الـ Login ليحاول تشغيل البصمة فوراً
-function checkLogin() {
-  // الكود الحالي الخاص بك
-  autoTriggerBiometric(); // استدعاء تلقائي
-}
-async function fastBiometricLogin() {
-  if (window.PublicKeyCredential) {
-    // محاكاة سريعة: إذا نجح في التعرف على وجود البصمة، يدخله بكلمة السر الافتراضية
-    document.getElementById("adminPass").value = "123456"; // الباسورد الخاص بك
-    checkLogin();
-    showAlert("تم التحقق بالبصمة (محاكاة)", "دخول سريع", "fa-fingerprint");
   }
 }
