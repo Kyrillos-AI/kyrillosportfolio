@@ -15,16 +15,17 @@
     }
   ],
   "start_url": "index.html",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#050505",
   "background_color": "#050505",
   "orientation": "portrait",
   "shortcuts": [
     {
-      "name": "تواصل معي",
-      "short_name": "اتصال",
-      "description": "فتح قسم التواصل مباشرة",
-      "url": "index.html#contact",
+      "name": "صمم مشروعك",
+      "short_name": "احجز",
+      "description": "احجز وصمم مشروع موقعك دلوقتي",
+      "url": "index.html#ultimate-wizard",
       "icons": [{ "src": "logo.png", "sizes": "192x192" }]
     },
     {

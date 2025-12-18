@@ -2214,53 +2214,19 @@ window.addEventListener("load", function () {
     .trim();
   loadParticles(themeColor);
 });
-// دالة اهتزاز محسنة
 function triggerVibration() {
   if (navigator.vibrate) {
-    // اهتزاز مزدوج خفيف ليعطي إيحاءً احترافياً
-    navigator.vibrate([40, 30, 40]);
-  } else {
-    console.log("Vibration API not supported on this device/browser.");
+    // نمط نبضي قوي جداً لجهاز انفنكس (200ms اهتزاز)
+    navigator.vibrate(200);
+    console.log("Infinix Vibrate Triggered");
   }
 }
 
-// تأكد من ربطها بالأزرار بعد تحميل الصفحة تماماً
-window.addEventListener("DOMContentLoaded", () => {
-  // استهداف كل الأزرار والروابط التفاعلية
-  const elements = document.querySelectorAll(
-    ".btn-cyber, .nav-icon, .color-btn, .btn"
-  );
-
-  elements.forEach((el) => {
-    el.addEventListener("click", () => {
+// التأكد من ربط كل الأزرار
+document
+  .querySelectorAll(".btn-cyber, .nav-icon, .login-icon, .btn")
+  .forEach((btn) => {
+    btn.addEventListener("click", () => {
       triggerVibration();
-      console.log("Vibrated!"); // للتأكد في الكونسول أثناء الفحص
     });
   });
-});
-async function sharePortfolio() {
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "Kyrillos | Creative Developer",
-        text: "شاهد معرض أعمال كيرلس المذهل!",
-        url: window.location.href,
-      });
-      console.log("تمت المشاركة بنجاح");
-    } catch (err) {
-      console.log("تم إلغاء المشاركة");
-    }
-  } else {
-    // إذا كان المتصفح لا يدعمها (مثل الكمبيوتر) استخدم الكود الموجود عندك فعلياً
-    copyLink();
-  }
-}
-window.addEventListener("deviceorientation", (event) => {
-  const cards = document.querySelectorAll(".project-card");
-  const x = event.beta; // الميل للأمام والخلف
-  const y = event.gamma; // الميل لليمين واليسار
-
-  cards.forEach((card) => {
-    card.style.transform = `rotateX(${x / 10}deg) rotateY(${y / 10}deg)`;
-  });
-});

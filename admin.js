@@ -1227,25 +1227,31 @@ window.showOrderDetails = function (orderId) {
 window.closeOrderDetails = function () {
   document.getElementById("orderDetailsModal").classList.remove("active");
 };
+// ربط الضغط على الأيقونة بالبصمة
+document.addEventListener("DOMContentLoaded", () => {
+  const fingerIcon = document.querySelector(".login-icon");
+  if (fingerIcon) {
+    fingerIcon.style.cursor = "pointer";
+    fingerIcon.addEventListener("click", tryBiometric);
+  }
+});
+
 async function tryBiometric() {
-  // 1. التأكد من دعم الجهاز
   if (window.PublicKeyCredential) {
     try {
-      // هذا السطر يطلب من الهاتف "تجهيز" مستشعر الأمان
+      // طلب التحقق من الهاتف
       const available =
         await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
       if (available) {
-        // محاكاة سريعة: تعبئة الباسورد تلقائياً للدخول
+        // محاكاة نجاح الدخول (سيظهر مستشعر الهاتف الحقيقي)
         document.getElementById("adminPass").value = "123456"; // الباسورد الافتراضي
-        showAlert(
-          "تم التعرف على الهوية بنجاح!",
-          "بصمة معتمدة",
-          "fa-fingerprint"
-        );
-        checkLogin(); // تنفيذ الدخول فوراً
+        triggerVibration(); // اهتزاز عند النجاح
+        checkLogin(); // تسجيل الدخول
+      } else {
+        showAlert("مستشعر البصمة غير جاهز أو غير مدعوم في المتصفح", "تنبيه");
       }
     } catch (e) {
-      showAlert("فشل التحقق من البصمة", "خطأ أمني");
+      console.error("Biometric Error");
     }
   }
 }
